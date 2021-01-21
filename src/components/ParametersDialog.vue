@@ -139,33 +139,8 @@ export default {
       this.show = false;
     },
     async sync() {
-      function writeDelayedValueToCharacteristic(
-        characteristic,
-        params,
-        delay
-      ) {
-        return new Promise(function (resolve, reject) {
-          setTimeout(
-            writeValueToCharacteristic,
-            delay,
-            characteristic,
-            params,
-            resolve,
-            reject
-          );
-        });
-      }
-
-      function writeValueToCharacteristic(
-        characteristic,
-        params,
-        resolve,
-        reject
-      ) {
-        return values_characteristic
-          .writeValueWithResponse(params)
-          .then(resolve)
-          .catch(reject);
+      function sleepMs(duration) {
+        return new Promise(resolve => setTimeout(() => resolve(), duration));
       }
 
       this.setConfigDate();
@@ -196,28 +171,18 @@ export default {
           "0000ec0f-0000-1000-8000-00805f9b34fb"
         );
 
-        var writePromises = [];
         var writtenStep = 0;
 
-        Object.keys(this.parameters).forEach((key, index) => {
-          var delay = (index+1) * 750;
-          var test = new TextEncoder().encode(
-            JSON.stringify({ [key]: this.parameters[key] })
+        for (const category in this.parameters) {
+          var params = new TextEncoder().encode(
+            JSON.stringify({ [category]: this.parameters[category] })
           );
 
-          var writePromise = writeDelayedValueToCharacteristic(
-            values_characteristic,
-            test,
-            delay
-          ).then(() => {
-            writtenStep = writtenStep + 1;
-            this.bluetoothSynchingValue = (writtenStep * 100) / writeSteps;
-          });
-
-          writePromises.push(writePromise);
-        });
-
-        await Promise.all(writePromises);
+          await values_characteristic.writeValueWithResponse(params);
+          writtenStep = writtenStep + 1;
+          this.bluetoothSynchingValue = (writtenStep * 100) / writeSteps;
+          await sleepMs(250);
+        }
 
         this.bluetoothSynchingState = false;
         this.bluetoothSynchingValue = 0;
