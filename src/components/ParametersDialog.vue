@@ -223,6 +223,7 @@ export default {
         this.bluetoothSynchingValue = 0;
         this.showSnackbar("Configuration synchronization succeeded", "success");
       } catch (error) {
+        console.log(error);
         this.bluetoothSynchingState = false;
         this.bluetoothSynchingValue = 0;
         this.showSnackbar(
