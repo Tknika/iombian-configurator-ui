@@ -184,6 +184,8 @@ export default {
           await sleepMs(250);
         }
 
+        await device.gatt.disconnect();
+
         this.bluetoothSynchingState = false;
         this.bluetoothSynchingValue = 0;
         this.showSnackbar("Configuration synchronization succeeded", "success");
