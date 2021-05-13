@@ -32,7 +32,7 @@
                   <v-btn
                     v-if="!numConfigurations"
                     small
-                    @click.native.stop="$refs.parametersDialog.open(deviceId)"
+                    @click.native.stop="$refs.parametersDialog.open(deviceId, null, numConfigurations>0)"
                   >
                     <v-icon left>mdi-plus</v-icon>
                     New configuration
@@ -42,7 +42,7 @@
                     small
                     class="ml-2"
                     @click.native.stop="
-                      $refs.parametersDialog.open(deviceId, lastConfiguration)
+                      $refs.parametersDialog.open(deviceId, lastConfiguration, numConfigurations>0)
                     "
                   >
                     <v-icon left>mdi-pencil</v-icon>
@@ -68,7 +68,7 @@
                         <v-list-item-action>
                           <v-icon
                             @click="
-                              $refs.parametersDialog.open(deviceId, config)
+                              $refs.parametersDialog.open(deviceId, config, numConfigurations>0)
                             "
                             >mdi-pencil</v-icon
                           >
