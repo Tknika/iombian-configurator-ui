@@ -28,8 +28,8 @@
         <v-toolbar-items>
           <v-btn v-if="bluetoothAvailable && !$vuetify.breakpoint.xs" dark text @click="sync">Sync<v-icon right>mdi-bluetooth</v-icon></v-btn>
           <v-btn v-if="bluetoothAvailable && $vuetify.breakpoint.xs" icon @click="sync"><v-icon>mdi-bluetooth</v-icon></v-btn>
-          <v-btn v-if="!$vuetify.breakpoint.xs" dark text @click="push">Push<v-icon right>mdi-cloud-upload</v-icon></v-btn>
-          <v-btn v-if="$vuetify.breakpoint.xs" icon @click="push"><v-icon>mdi-cloud-upload</v-icon></v-btn>
+          <v-btn v-if="pushEnabled && !$vuetify.breakpoint.xs" dark text @click="push">Push<v-icon right>mdi-cloud-upload</v-icon></v-btn>
+          <v-btn v-if="pushEnabled && $vuetify.breakpoint.xs" icon @click="push"><v-icon>mdi-cloud-upload</v-icon></v-btn>
           <v-btn v-if="!$vuetify.breakpoint.xs" dark text @click="download">Download<v-icon right>mdi-download</v-icon></v-btn>
           <v-btn v-if="$vuetify.breakpoint.xs" icon @click="download"><v-icon>mdi-download</v-icon></v-btn>
         </v-toolbar-items>
@@ -78,6 +78,7 @@ export default {
     render: false,
     deviceId: null,
     parameters: {},
+    pushEnabled: false,
     bluetoothAvailable: false,
     bluetoothSynchingState: false,
     bluetoothSynchingValue: 0,
@@ -101,9 +102,10 @@ export default {
       };
       Object.assign(this.parameters, config_date);
     },
-    open(deviceId, parameters) {
+    open(deviceId, parameters, pushEnabled=false) {
       this.show = true;
       this.deviceId = deviceId;
+      this.pushEnabled = pushEnabled;
       this.parameters = parameters
         ? JSON.parse(JSON.stringify(parameters))
         : JSON.parse(JSON.stringify(default_parameters));
