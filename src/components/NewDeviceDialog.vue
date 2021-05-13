@@ -3,16 +3,21 @@
     <v-card>
       <v-card-title>New Device</v-card-title>
       <v-card-text>
-        <v-text-field
-          v-model="deviceId"
-          label="Device ID"
-          prepend-icon="mdi-identifier"
+        <v-form v-model="isDeviceIdValid">
+          <v-text-field
+            v-model="deviceId"
+            label="Device ID"
+            hint="Device ID will also be used as the hostname"
+            persistent-hint
+            prepend-icon="mdi-identifier"
+            :rules="[rules.required, rules.hostname]"
         ></v-text-field>
+        </v-form>
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn text @click="close(false)">Cancel</v-btn>
-        <v-btn color="primary" @click="close(true)">Add</v-btn>
+        <v-btn :disabled="!isDeviceIdValid" color="primary" @click="close(true)">Add</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -22,10 +27,18 @@
 export default {
   name: "NewDeviceDialog",
   props: {
-    show: Boolean,
+    show: Boolean
   },
   data: () => ({
     deviceId: "",
+    isDeviceIdValid: false,
+    rules: {
+      required: value => !!value || 'Required',
+      hostname: value => {
+        const pattern = /^(?![0-9]+$)(?!.*-$)(?!-)[a-zA-Z0-9-]{1,63}$/g;
+        return pattern.test(value) || 'Only letters from a to z, digits from 0 to 9 and the hyphen (-) are allowed (63)'
+      }
+    }
   }),
   methods: {
     close(store) {
