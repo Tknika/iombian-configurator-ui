@@ -138,7 +138,6 @@ export default {
         type: "text/plain;charset=utf-8",
       });
       fileSaver.saveAs(yamlBlob, "parameters.yml");
-      this.show = false;
     },
     async sync() {
       function sleepMs(duration) {
@@ -191,6 +190,7 @@ export default {
         this.bluetoothSynchingState = false;
         this.bluetoothSynchingValue = 0;
         this.showSnackbar("Configuration synchronization succeeded", "success");
+        this.show = false;
       } catch (error) {
         console.log(error);
         this.bluetoothSynchingState = false;
