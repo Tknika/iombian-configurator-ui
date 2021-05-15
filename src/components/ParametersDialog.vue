@@ -26,8 +26,10 @@
         <v-toolbar-title>Configuration</v-toolbar-title>
         <v-spacer></v-spacer>
         <v-toolbar-items>
-          <v-btn v-if="bluetoothAvailable && !$vuetify.breakpoint.xs" dark text @click="sync">Sync<v-icon right>mdi-bluetooth</v-icon></v-btn>
-          <v-btn v-if="bluetoothAvailable && $vuetify.breakpoint.xs" icon @click="sync"><v-icon>mdi-bluetooth</v-icon></v-btn>
+          <v-btn v-if="serialAvailable && !$vuetify.breakpoint.xs" dark text @click="serialSync">Sync<v-icon right>mdi-usb-port</v-icon></v-btn>
+          <v-btn v-if="serialAvailable && $vuetify.breakpoint.xs" icon @click="serialSync"><v-icon>mdi-usb-port</v-icon></v-btn>
+          <v-btn v-if="bluetoothAvailable && !$vuetify.breakpoint.xs" dark text @click="bluetoothSync">Sync<v-icon right>mdi-bluetooth</v-icon></v-btn>
+          <v-btn v-if="bluetoothAvailable && $vuetify.breakpoint.xs" icon @click="bluetoothSync"><v-icon>mdi-bluetooth</v-icon></v-btn>
           <v-btn v-if="pushEnabled && !$vuetify.breakpoint.xs" dark text @click="push">Push<v-icon right>mdi-cloud-upload</v-icon></v-btn>
           <v-btn v-if="pushEnabled && $vuetify.breakpoint.xs" icon @click="push"><v-icon>mdi-cloud-upload</v-icon></v-btn>
           <v-btn v-if="!$vuetify.breakpoint.xs" dark text @click="download">Download<v-icon right>mdi-download</v-icon></v-btn>
@@ -82,6 +84,7 @@ export default {
     bluetoothAvailable: false,
     bluetoothSynchingState: false,
     bluetoothSynchingValue: 0,
+    serialAvailable: false,
     snackbarState: false,
     snackbarText: "",
     snackbarColor: "success",
@@ -119,6 +122,7 @@ export default {
       };
       Object.assign(this.parameters, remote_configurator);
       this.bluetoothAvailable = "bluetooth" in navigator;
+      this.serialAvailable = "serial" in navigator;
     },
     showSnackbar(text, color) {
       this.snackbarText = text;
@@ -139,7 +143,7 @@ export default {
       });
       fileSaver.saveAs(yamlBlob, "parameters.yml");
     },
-    async sync() {
+    async bluetoothSync() {
       function sleepMs(duration) {
         return new Promise(resolve => setTimeout(() => resolve(), duration));
       }
@@ -201,6 +205,42 @@ export default {
         );
       }
     },
+    async serialSync() {
+      const raspberryPi4filter = { usbVendorId: 0x0525, usbProductId: 0xa4a7 }
+
+      this.setConfigDate();
+
+      try {
+        const port = await navigator.serial.requestPort({ filters: [raspberryPi4filter] });
+        await port.open({ baudRate: 115200 });
+
+        const writer = port.writable.getWriter();
+
+        const encoded_parameters = new TextEncoder().encode(JSON.stringify(this.parameters));
+
+        await writer.write(encoded_parameters);
+
+        writer.close();
+        writer.releaseLock();
+        await port.close();
+
+        this.show = false;
+      } catch (error) {
+        switch (error.message) {
+          case "No port selected by the user.":
+            break;
+          case "Failed to open serial port.":
+            this.showSnackbar(
+              "Failed to open serial port",
+              "error"
+            );
+            console.log("Failed to open serial port");
+            break;
+          default:
+            console.log(error);
+        }
+      }
+    }
   },
 };
 </script>
