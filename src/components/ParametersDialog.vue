@@ -196,13 +196,18 @@ export default {
         this.showSnackbar("Configuration synchronization succeeded", "success");
         this.show = false;
       } catch (error) {
-        console.log(error);
+        switch (error.message) {
+          case "User cancelled the requestDevice() chooser.":
+            break;
+          default:
+            console.log(error);
+            this.showSnackbar(
+              "Configuration synchronization failed (try again)",
+              "error"
+            );
+        }
         this.bluetoothSynchingState = false;
         this.bluetoothSynchingValue = 0;
-        this.showSnackbar(
-          "Configuration synchronization failed (try again)",
-          "error"
-        );
       }
     },
     async serialSync() {
