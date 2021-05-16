@@ -239,10 +239,13 @@ export default {
               "Failed to open serial port",
               "error"
             );
-            console.log("Failed to open serial port");
             break;
           default:
-            console.log(error);
+            this.showSnackbar(
+              "Configuration synchronization failed",
+              "error"
+            );
+            console.log(error.message);
         }
       }
     }
