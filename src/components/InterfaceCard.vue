@@ -106,9 +106,11 @@
               dense
               single-line
               label="Password"
-              type="password"
+              :type="wirelessCredentialsVisibility[credsName] ? 'text' : 'password'"
               v-model="creds.psk"
+              :append-icon="wirelessCredentialsVisibility[credsName] ? 'mdi-eye-off' : 'mdi-eye'"
               append-outer-icon="mdi-delete"
+              @click:append="toogleWirelessCredentialsVisibility(credsName)"
               @click:append-outer="
                 deleteWirelessCredentials(credsName)
               "
@@ -135,7 +137,8 @@ export default {
   },
   data: () => ({
     profileItems: ["static", "dhcp"],
-    dnsItems: ["8.8.8.8", "8.8.4.4", "1.1.1.1"]
+    dnsItems: ["8.8.8.8", "8.8.4.4", "1.1.1.1"],
+    wirelessCredentialsVisibility: {},
   }),
   computed: {},
   methods: {
@@ -146,7 +149,7 @@ export default {
       return this.ifaceName.startsWith("wlan");
     },
     deleteInterface() {
-        this.$emit("onDeleteRequest", this.ifaceName);
+      this.$emit("onDeleteRequest", this.ifaceName);
     },
     addInterfaceField(field) {
       this.$set(this.ifaceData, field, "");
@@ -158,6 +161,9 @@ export default {
       const creds = Object.keys(this.ifaceData)
         .filter((credsName) => credsName.startsWith("wlan"))
         .reduce((obj, credsName) => {
+          if (!Object.prototype.hasOwnProperty.call(this.wirelessCredentialsVisibility, credsName)) {
+            this.$set(this.wirelessCredentialsVisibility, credsName, false);
+          }
           obj[credsName] = this.ifaceData[credsName];
           return obj;
         }, {});
@@ -176,9 +182,26 @@ export default {
         ssid: "",
         psk: "",
       });
+      this.$set(this.wirelessCredentialsVisibility, credsName, false);
     },
     deleteWirelessCredentials(credsName) {
       this.$delete(this.ifaceData, credsName);
+      this.$delete(this.wirelessCredentialsVisibility, credsName);
+      this.reorderWirelessCredentials();      
+    },
+    reorderWirelessCredentials() {
+      var ifaceDataCopy = { ...this.ifaceData };
+      const wirelessCredentialsNames = Object.keys(this.ifaceData).filter((credsName) => credsName.startsWith("wlan"));
+      wirelessCredentialsNames.forEach(name => this.$delete(this.ifaceData, name));
+      Object.keys(ifaceDataCopy).filter(credsName => credsName.startsWith("wlan"))
+        .forEach((oldName, index) => {
+          const newName = index>0 ? "wlan" + (index+1) : "wlan";
+          this.$set(this.ifaceData, newName, ifaceDataCopy[oldName]);
+        });
+    },
+    toogleWirelessCredentialsVisibility(credsName) {
+      var new_state = !this.wirelessCredentialsVisibility[credsName];     
+      this.$set(this.wirelessCredentialsVisibility, credsName, new_state);
     },
   },
 };
