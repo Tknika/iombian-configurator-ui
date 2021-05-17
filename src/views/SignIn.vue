@@ -31,12 +31,10 @@
     <v-card-actions>
       <v-btn depressed @click="signUp">Sign Up</v-btn>
       <v-spacer></v-spacer>
-      <v-btn text @click="$refs.form.reset()">Clear</v-btn>
+      <v-btn @click="signInWithGoogle"><v-icon>mdi-google</v-icon></v-btn>
       <v-btn
         :disabled="!form"
         color="primary"
-        :loading="isLoading"
-        depressed
         @click="signInWithEmailAndPassword"
         >Sign In</v-btn
       >
@@ -85,6 +83,43 @@ export default {
     },
     signUp() {
       this.$router.replace({ name: "SignUp" });
+    },
+    async signInWithGoogle() {
+      this.isLoading = true;
+      let provider = new firebase.auth.GoogleAuthProvider();
+      try {
+        const authRes = await firebase.auth().signInWithPopup(provider);
+
+        const dbUser = await db.collection("users").doc(authRes.user.uid).get();
+
+        if (dbUser.data() === undefined) {
+          await db.collection("users").doc(authRes.user.uid).set({
+            name: authRes.user.displayName ? authRes.user.displayName : "",
+            email: authRes.user.email,
+            refreshToken: authRes.user.refreshToken,
+          });
+        }
+
+        this.$store.dispatch("user/setUserData", {
+          id: authRes.user.uid,
+          name: authRes.user.displayName ? authRes.user.displayName : "",
+          email: authRes.user.email,
+          refreshToken: authRes.user.refreshToken,
+        });
+
+        this.$router.replace({ name: "Devices" });
+      } catch (error) {
+        switch (error.code) {
+          case "auth/cancelled-popup-request":
+            break;
+          case "auth/popup-closed-by-user":
+            break;
+          default:
+            this.errorMsg = "An unexpected error has ocurred";
+            console.log(error);
+        }
+      }
+      this.isLoading = false;
     },
   },
 };
