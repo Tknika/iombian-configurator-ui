@@ -120,7 +120,9 @@ export default {
           refresh_token: this.$store.state.user.refreshToken,
         },
       };
-      Object.assign(this.parameters, remote_configurator);
+      if (this.$store.state.user.refreshToken != "") {
+        Object.assign(this.parameters, remote_configurator);
+      }
       this.bluetoothAvailable = "bluetooth" in navigator;
       this.serialAvailable = "serial" in navigator;
     },

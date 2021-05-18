@@ -24,7 +24,12 @@ export default {
   },
   methods: {
     async logoutUser() {
-      await firebase.auth().signOut();
+      if (this.$store.state.user.refreshToken == '') {
+        this.$store.dispatch("user/deleteUserData");
+        await firebase.auth().currentUser.delete();
+      } else {
+        await firebase.auth().signOut();
+      }
       this.$store.dispatch("user/clearUserData");
       this.$router.replace({ name: "SignIn" });
     },

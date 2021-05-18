@@ -60,7 +60,14 @@ const actions = {
         delete deviceObject["parameters"][configDate];
         db.collection("users").doc(context.state.id).collection("devices").doc(deviceId).update(deviceObject);
     }),
-}  
+    deleteUserData: firestoreAction(async (context) => {
+        const devices = await db.collection('users').doc(context.state.id).collection("devices").get();
+        devices.forEach(device =>  {
+            db.collection("users").doc(context.state.id).collection("devices").doc(device.id).delete();
+        });
+        db.collection("users").doc(context.state.id).delete();
+    }),
+}
 
 const getters = {}
 
