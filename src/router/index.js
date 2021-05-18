@@ -7,7 +7,7 @@ Vue.use(VueRouter)
 
 const routes = [
   {
-    path: '/',
+    path: '/sign-in',
     name: 'SignIn',
     component: () => import(/* webpackChunkName: "sign-in" */ '../views/SignIn.vue')
   },
@@ -17,7 +17,7 @@ const routes = [
     component: () => import(/* webpackChunkName: "sign-up" */ '../views/SignUp.vue')
   },
   {
-    path: '/devices',
+    path: '/',
     name: 'Devices',
     component: Devices,
     beforeEnter: guard
@@ -28,7 +28,7 @@ function guard(to, from, next) {
   if (store.state.user.id) {
     next();
   } else {
-    next('/');
+    next('/sign-in');
   }
 }
 
