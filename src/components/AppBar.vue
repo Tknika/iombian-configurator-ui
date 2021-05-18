@@ -26,7 +26,7 @@ export default {
     async logoutUser() {
       await firebase.auth().signOut();
       this.$store.dispatch("user/clearUserData");
-      this.$router.replace("/");
+      this.$router.replace({ name: "SignIn" });
     },
   },
 };
