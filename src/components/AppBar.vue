@@ -25,6 +25,7 @@ export default {
   methods: {
     async logoutUser() {
       if (this.$store.state.user.refreshToken == '') {
+        this.$store.dispatch("user/deleteUserData");
         await firebase.auth().currentUser.delete();
       } else {
         await firebase.auth().signOut();
