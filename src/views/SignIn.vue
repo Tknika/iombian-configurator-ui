@@ -31,6 +31,7 @@
     <v-card-actions>
       <v-btn depressed @click="signUp">Sign Up</v-btn>
       <v-spacer></v-spacer>
+      <v-btn @click="signInAnonymously"><v-icon>mdi-incognito</v-icon></v-btn>
       <v-btn @click="signInWithGoogle"><v-icon>mdi-google</v-icon></v-btn>
       <v-btn
         :disabled="!form"
@@ -118,6 +119,24 @@ export default {
             this.errorMsg = "An unexpected error has ocurred";
             console.log(error);
         }
+      }
+      this.isLoading = false;
+    },
+    async signInAnonymously() {
+      this.isLoading = true;
+
+      try {
+        const authRes = await firebase.auth().signInAnonymously();
+
+        this.$store.dispatch("user/setUserData", {
+          id: authRes.user.uid,
+          name: "",
+          email: "",
+          refreshToken: "",
+        });
+        this.$router.replace({ name: "Devices" });
+      } catch (error) {
+        console.log(error);
       }
       this.isLoading = false;
     },
