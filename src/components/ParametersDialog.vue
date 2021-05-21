@@ -67,6 +67,7 @@ import NetworkCard from "./NetworkCard";
 import yamlHandler from "js-yaml";
 import fileSaver from "file-saver";
 import strftime from "strftime";
+import * as fflate from 'fflate';
 
 export default {
   name: "ParametersDialog",
@@ -152,8 +153,9 @@ export default {
 
       this.setConfigDate();
 
+      var device = null;
       try {
-        const device = await navigator.bluetooth.requestDevice({
+        device = await navigator.bluetooth.requestDevice({
           filters: [{ services: ["0000ec00-0000-1000-8000-00805f9b34fb"] }],
         });
 
@@ -169,7 +171,26 @@ export default {
           "0000ec0d-0000-1000-8000-00805f9b34fb"
         );
 
-        const writeSteps = Object.keys(this.parameters).length;
+        var paramsChunks = [];
+        for (const category in this.parameters) {
+          const params_string = JSON.stringify({ [category]: this.parameters[category] });
+          const params_encoded = new TextEncoder().encode(params_string);
+          const params = fflate.compressSync(params_encoded);
+
+          if (params.length > 512) {
+            for (const subcategory in this.parameters[category]) {
+              const params_string = JSON.stringify({ [category]: { [subcategory]: this.parameters[category][subcategory] } });
+              const params_encoded = new TextEncoder().encode(params_string);
+              const params = fflate.compressSync(params_encoded);
+              paramsChunks.push(params)
+            }
+          } else {
+            paramsChunks.push(params);
+          }
+        }
+
+        const writeSteps = paramsChunks.length;
+
         await length_characteristic.writeValueWithResponse(
           new TextEncoder().encode(writeSteps)
         );
@@ -180,11 +201,7 @@ export default {
 
         var writtenStep = 0;
 
-        for (const category in this.parameters) {
-          var params = new TextEncoder().encode(
-            JSON.stringify({ [category]: this.parameters[category] })
-          );
-
+        for (const params of paramsChunks) {
           await values_characteristic.writeValueWithResponse(params);
           writtenStep = writtenStep + 1;
           this.bluetoothSynchingValue = (writtenStep * 100) / writeSteps;
@@ -202,11 +219,14 @@ export default {
           case "User cancelled the requestDevice() chooser.":
             break;
           default:
-            console.log(error);
+            console.log(error.message);
             this.showSnackbar(
               "Configuration synchronization failed (try again)",
               "error"
             );
+        }
+        if (device && device.gatt.connected) {
+          await device.gatt.disconnect();
         }
         this.bluetoothSynchingState = false;
         this.bluetoothSynchingValue = 0;
