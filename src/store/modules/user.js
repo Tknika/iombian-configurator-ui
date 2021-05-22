@@ -40,6 +40,7 @@ const actions = {
     addDevice: firestoreAction((context, deviceId) => {
         db.collection("users").doc(context.state.id).collection("devices").doc(deviceId).set({
             creation_date: strftime("%Y-%m-%dT%H:%M:%S"),
+            last_connection: -1,
             parameters: {}
         });
     }),
