@@ -6,7 +6,7 @@
         <v-card>
           <v-card-title class="headline">
             {{ deviceId }}
-            <ConnectionStatusIcon :lastConnection="data.last_connection"/>
+            <ConnectionStatusIcon :lastConnection="lastConnection"/>
             <v-spacer></v-spacer>
             <v-btn v-if="!$vuetify.breakpoint.xs" small outlined text @click="showDeleteDeviceDialog=true">Delete<v-icon dark right>mdi-delete</v-icon></v-btn>
             <v-btn v-if="$vuetify.breakpoint.xs" small outlined text @click="showDeleteDeviceDialog=true"><v-icon dark>mdi-delete</v-icon></v-btn>
@@ -117,6 +117,13 @@ export default {
     },
     creationDate() {
       return this.data.creation_date.split("T")[0];
+    },
+    lastConnection() {
+      if (Object.prototype.hasOwnProperty.call(this.data, "last_connection")) {
+        return this.data.last_connection;
+      } else {
+        return -1;
+      }
     },
     sortedConfigurations() {
       return Object.keys(this.data.parameters)
