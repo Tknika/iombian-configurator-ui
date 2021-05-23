@@ -6,11 +6,10 @@
         <v-card>
           <v-card-title class="headline">
             {{ deviceId }}
+            <ConnectionStatusIcon :lastConnection="lastConnection"/>
             <v-spacer></v-spacer>
-            <v-btn small outlined text @click="showDeleteDeviceDialog = true"
-              >Delete
-              <v-icon dark right>mdi-delete</v-icon>
-            </v-btn>
+            <v-btn v-if="!$vuetify.breakpoint.xs" small outlined text @click="showDeleteDeviceDialog=true">Delete<v-icon dark right>mdi-delete</v-icon></v-btn>
+            <v-btn v-if="$vuetify.breakpoint.xs" small outlined text @click="showDeleteDeviceDialog=true"><v-icon dark>mdi-delete</v-icon></v-btn>
             <DeleteDeviceDialog
               :show="showDeleteDeviceDialog"
               :deviceId="deviceId"
@@ -95,6 +94,7 @@
 <script>
 import ParametersDialog from "./ParametersDialog";
 import DeleteDeviceDialog from "./DeleteDeviceDialog";
+import ConnectionStatusIcon from "./ConnectionStatusIcon";
 export default {
   name: "DeviceCard",
   props: {
@@ -105,6 +105,7 @@ export default {
   components: {
     ParametersDialog,
     DeleteDeviceDialog,
+    ConnectionStatusIcon,
   },
   data: () => ({
     showDeleteDeviceDialog: false,
@@ -116,6 +117,13 @@ export default {
     },
     creationDate() {
       return this.data.creation_date.split("T")[0];
+    },
+    lastConnection() {
+      if (Object.prototype.hasOwnProperty.call(this.data, "last_connection")) {
+        return this.data.last_connection;
+      } else {
+        return -1;
+      }
     },
     sortedConfigurations() {
       return Object.keys(this.data.parameters)
