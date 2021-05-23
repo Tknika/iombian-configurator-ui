@@ -21,6 +21,8 @@
         v-if="ifaceData.hasOwnProperty('ip') && ifaceData.profile == 'static'"
         label="IP Address"
         v-model="ifaceData.ip"
+        hint="Example: 192.168.1.2/24"
+        persistent-hint
         prepend-icon="mdi-ip"
         append-outer-icon="mdi-delete"
         @click:append-outer="deleteInterfaceField('ip')"
