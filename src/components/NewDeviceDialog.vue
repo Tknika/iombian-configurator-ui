@@ -3,7 +3,7 @@
     <v-card>
       <v-card-title>New Device</v-card-title>
       <v-card-text>
-        <v-form v-model="isDeviceIdValid">
+        <v-form ref="deviceIdform" v-model="isDeviceIdValid">
           <v-text-field
             v-model="deviceId"
             label="Device ID"
@@ -43,7 +43,7 @@ export default {
   methods: {
     close(store) {
       if (store) this.$store.dispatch("user/addDevice", this.deviceId);
-      this.deviceId = "";
+      this.$refs.deviceIdform.reset();
       this.$emit("closed");
     },
   },
