@@ -7,7 +7,7 @@
         size="64"
       ></v-progress-circular>
     </v-overlay>
-    <v-form ref="form" v-model="form" class="pa-4 mt-6">
+    <v-form ref="form" v-model="validCredentials" class="pa-4 mt-6">
       <v-text-field
         v-model="name"
         filled
@@ -20,6 +20,7 @@
         append-icon="mdi-email-outline"
         label="Email"
         type="email"
+        :rules="emailRules"
       ></v-text-field>
       <v-text-field
         v-model="password"
@@ -28,6 +29,7 @@
         label="Password"
         type="password"
         style="min-height: 96px"
+        :rules="passwordRules"
       ></v-text-field>
     </v-form>
     <v-alert v-if="errorMsg" border="top" color="red" class="ml-5 mr-5">{{
@@ -39,7 +41,7 @@
       <v-spacer></v-spacer>
       <v-btn text @click="$refs.form.reset()">Clear</v-btn>
       <v-btn
-        :disabled="!form"
+        :disabled="!validCredentials"
         color="primary"
         :loading="isLoading"
         depressed
@@ -60,8 +62,16 @@ export default {
     email: "",
     password: "",
     errorMsg: "",
-    form: false,
+    validCredentials: false,
     isLoading: false,
+    emailRules: [
+      v => !!v || 'E-mail is required',
+      v => /.+@.+\..+/.test(v) || 'E-mail must be valid',
+    ],
+    passwordRules: [
+      v => !!v || 'Password is required',
+      v => (v && v.length >= 6) || 'Password must have 6+ characters'
+    ]
   }),
   methods: {
     async signUpWithEmailAndPassword() {
