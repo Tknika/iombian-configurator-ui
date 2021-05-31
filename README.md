@@ -1,5 +1,11 @@
 # IoMBian Configurator UI
 
+## Demo
+
+A fully functional version of the UI is available in the following URL:
+
+https://iombian-configurator.web.app
+
 ## Project setup
 ```
 npm install
