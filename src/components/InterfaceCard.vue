@@ -109,7 +109,7 @@
               single-line
               label="Password"
               :type="wirelessCredentialsVisibility[credsName] ? 'text' : 'password'"
-              v-model="creds.psk"
+              @change="onWirelessPasswordChange($event, creds)"
               :append-icon="wirelessCredentialsVisibility[credsName] ? 'mdi-eye-off' : 'mdi-eye'"
               append-outer-icon="mdi-delete"
               @click:append="toogleWirelessCredentialsVisibility(credsName)"
@@ -182,7 +182,7 @@ export default {
       }
       this.$set(this.ifaceData, credsName, {
         ssid: "",
-        psk: "",
+        key_mgmt: "NONE"
       });
       this.$set(this.wirelessCredentialsVisibility, credsName, false);
     },
@@ -204,6 +204,15 @@ export default {
     toogleWirelessCredentialsVisibility(credsName) {
       var new_state = !this.wirelessCredentialsVisibility[credsName];     
       this.$set(this.wirelessCredentialsVisibility, credsName, new_state);
+    },
+    onWirelessPasswordChange(newPassword, creds) {
+      if (!newPassword) {
+        this.$delete(creds, "psk");
+        this.$set(creds, "key_mgmt", "NONE");
+      } else {
+        this.$set(creds, "psk", newPassword);
+        this.$set(creds, "key_mgmt", "WPA-PSK");
+      }
     },
   },
 };
