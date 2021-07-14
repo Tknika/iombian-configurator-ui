@@ -109,6 +109,7 @@
               single-line
               label="Password"
               :type="wirelessCredentialsVisibility[credsName] ? 'text' : 'password'"
+              :value="creds.psk"
               @change="onWirelessPasswordChange($event, creds)"
               :append-icon="wirelessCredentialsVisibility[credsName] ? 'mdi-eye-off' : 'mdi-eye'"
               append-outer-icon="mdi-delete"
