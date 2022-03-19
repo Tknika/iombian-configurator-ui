@@ -40,6 +40,10 @@ const parameters = {
     samba: {
         enabled: true,
     },
+    wetty: {
+        enabled: true,
+        port: 3000
+    },
     monit: {
         refresh: 10,
         port: 2812,
