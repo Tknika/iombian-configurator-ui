@@ -41,7 +41,8 @@ const actions = {
         db.collection("users").doc(context.state.id).collection("devices").doc(deviceId).set({
             creation_date: strftime("%Y-%m-%dT%H:%M:%S"),
             last_connection: 0,
-            parameters: {}
+            parameters: {},
+            tunnels: {}
         });
     }),
     deleteDevice: firestoreAction((context, deviceId) => {
@@ -63,11 +64,21 @@ const actions = {
     }),
     deleteUserData: firestoreAction(async (context) => {
         const devices = await db.collection('users').doc(context.state.id).collection("devices").get();
-        devices.forEach(device =>  {
+        devices.forEach(device => {
             db.collection("users").doc(context.state.id).collection("devices").doc(device.id).delete();
         });
         db.collection("users").doc(context.state.id).delete();
     }),
+    addDeviceTunnel: firestoreAction((context, { deviceId, tunnelPort, tunnelConfig }) => {
+        var deviceObject = context.state.devices.find(e => e.id == deviceId);
+        deviceObject["tunnels"][tunnelPort] = tunnelConfig;
+        db.collection("users").doc(context.state.id).collection("devices").doc(deviceId).update(deviceObject);
+    }),
+    deleteDeviceTunnel: firestoreAction((context, { deviceId, tunnelPort }) => {
+        var deviceObject = context.state.devices.find(e => e.id == deviceId);
+        delete deviceObject["tunnels"][tunnelPort];
+        db.collection("users").doc(context.state.id).collection("devices").doc(deviceId).update(deviceObject);
+    })
 }
 
 const getters = {}
