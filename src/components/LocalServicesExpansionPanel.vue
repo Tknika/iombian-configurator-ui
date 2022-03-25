@@ -6,7 +6,7 @@
     <v-expansion-panel-content dense flat>
       <v-list dense>
         <v-fade-transition group>
-          <LocalService
+          <LocalServiceListItem
             :service="serviceParams"
             :ipList="candidateIps"
             :key="index"
@@ -20,9 +20,9 @@
 </template>
 
 <script>
-import LocalService from "./LocalService";
+import LocalServiceListItem from "./LocalServiceListItem";
 export default {
-  name: "LocalServices",
+  name: "LocalServicesExpansionPanel",
   props: {
     services: {
       type: Object,
@@ -34,7 +34,7 @@ export default {
     },
   },
   components: {
-    LocalService,
+    LocalServiceListItem,
   },
   data: () => ({
     webServicesStatusMapping: {},

@@ -15,7 +15,7 @@
 
 <script>
 export default {
-  name: "LocalService",
+  name: "LocalServiceListItem",
   props: {
     service: {
       type: Object,

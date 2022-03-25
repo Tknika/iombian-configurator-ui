@@ -38,7 +38,7 @@
           </v-card-subtitle>
           <v-divider></v-divider>
           <v-expansion-panels accordion v-model="openedPanel">
-            <LocalServices
+            <LocalServicesExpansionPanel
               :services="services"
               :systemInfo="systemInfo"
               @localConnectionStatusUpdated="onLocalConnectionStatusUpdated"
@@ -133,7 +133,7 @@
 import ParametersDialog from "./ParametersDialog";
 import DeleteDeviceDialog from "./DeleteDeviceDialog";
 import ConnectionStatusIcon from "./ConnectionStatusIcon";
-import LocalServices from "./LocalServices";
+import LocalServicesExpansionPanel from "./LocalServicesExpansionPanel";
 import LocalConnectionStatusIcon from "./LocalConnectionStatusIcon.vue";
 export default {
   name: "DeviceCard",
@@ -146,7 +146,7 @@ export default {
     ParametersDialog,
     DeleteDeviceDialog,
     ConnectionStatusIcon,
-    LocalServices,
+    LocalServicesExpansionPanel,
     LocalConnectionStatusIcon,
   },
   data: () => ({
