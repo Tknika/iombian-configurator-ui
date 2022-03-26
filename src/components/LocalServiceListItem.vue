@@ -90,7 +90,9 @@ export default {
       const { timeout = 1000, ...fetchOptions } = options;
 
       return Promise.race([
-        fetch(url, fetchOptions),
+        fetch(url, fetchOptions).catch(() => {
+          return;
+        }),
         new Promise((_, reject) => {
           setTimeout(() => {
             reject("timeout");
@@ -101,13 +103,16 @@ export default {
     checkStatus() {
       this.candidateURLs = {};
       this.ipList.forEach((ip) => {
-        const url = "http://" + ip + ":" + this.servicePort;
-        this.fetchWithTimeout(url, { timeout: 500, mode: "no-cors" })
+        // Ugly workaround. Modern browsers do not load HTTP resources if the webpage is served
+        // over HTTPS, so an HTTPS url must be used to check if the service is available.
+        const https_url = "https://" + ip + ":" + this.servicePort;
+        const http_url = "http://" + ip + ":" + this.servicePort;
+        this.fetchWithTimeout(https_url, { timeout: 500, mode: "no-cors" })
           .then(() => {
-            this.$set(this.candidateURLs, url, true);
+            this.$set(this.candidateURLs, http_url, true);
           })
           .catch(() => {
-            this.$set(this.candidateURLs, url, false);
+            this.$set(this.candidateURLs, http_url, false);
           });
       });
     },
