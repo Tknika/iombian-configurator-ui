@@ -300,7 +300,7 @@ export default {
       deep: true,
       handler: function (newValue) {
         if (newValue == 0) this.openedPanel = null;
-        if (newValue > 0) this.openedPanel = 0;
+        if (newValue > 0) this.openedPanel = 2;
       },
     },
   },
