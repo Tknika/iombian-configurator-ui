@@ -6,10 +6,27 @@
         <v-card>
           <v-card-title class="headline">
             {{ deviceId }}
-            <ConnectionStatusIcon :lastConnection="lastConnection"/>
+            <ConnectionStatusIcon :lastConnection="lastConnection" />
+            <LocalConnectionStatusIcon
+              :localConnectionStatus="localConnectionStatus"
+            />
             <v-spacer></v-spacer>
-            <v-btn v-if="!$vuetify.breakpoint.xs" small outlined text @click="showDeleteDeviceDialog=true">Delete<v-icon dark right>mdi-delete</v-icon></v-btn>
-            <v-btn v-if="$vuetify.breakpoint.xs" small outlined text @click="showDeleteDeviceDialog=true"><v-icon dark>mdi-delete</v-icon></v-btn>
+            <v-btn
+              v-if="!$vuetify.breakpoint.xs"
+              small
+              outlined
+              text
+              @click="showDeleteDeviceDialog = true"
+              >Delete<v-icon dark right>mdi-delete</v-icon></v-btn
+            >
+            <v-btn
+              v-if="$vuetify.breakpoint.xs"
+              small
+              outlined
+              text
+              @click="showDeleteDeviceDialog = true"
+              ><v-icon dark>mdi-delete</v-icon></v-btn
+            >
             <DeleteDeviceDialog
               :show="showDeleteDeviceDialog"
               :deviceId="deviceId"
@@ -20,18 +37,31 @@
             Creation date: {{ creationDate }}
           </v-card-subtitle>
           <v-divider></v-divider>
-          <v-expansion-panels flat>
+          <v-expansion-panels accordion v-model="openedPanel">
+            <LocalServicesExpansionPanel
+              :services="services"
+              :systemInfo="systemInfo"
+              @localConnectionStatusUpdated="onLocalConnectionStatusUpdated"
+            />
             <v-expansion-panel :readonly="!numConfigurations">
               <v-expansion-panel-header
                 class="px-4"
                 :hide-actions="!numConfigurations"
               >
                 <span>
-                  <span v-if="numConfigurations">Saved configurations: {{ numConfigurations }}</span>
+                  <span v-if="numConfigurations"
+                    >Saved configurations: {{ numConfigurations }}</span
+                  >
                   <v-btn
                     v-if="!numConfigurations"
                     small
-                    @click.native.stop="$refs.parametersDialog.open(deviceId, null, numConfigurations>0)"
+                    @click.native.stop="
+                      $refs.parametersDialog.open(
+                        deviceId,
+                        null,
+                        numConfigurations > 0
+                      )
+                    "
                   >
                     <v-icon left>mdi-plus</v-icon>
                     New configuration
@@ -41,7 +71,11 @@
                     small
                     class="ml-2"
                     @click.native.stop="
-                      $refs.parametersDialog.open(deviceId, lastConfiguration, numConfigurations>0)
+                      $refs.parametersDialog.open(
+                        deviceId,
+                        lastConfiguration,
+                        numConfigurations > 0
+                      )
                     "
                   >
                     <v-icon left>mdi-pencil</v-icon>
@@ -67,7 +101,11 @@
                         <v-list-item-action>
                           <v-icon
                             @click="
-                              $refs.parametersDialog.open(deviceId, config, numConfigurations>0)
+                              $refs.parametersDialog.open(
+                                deviceId,
+                                config,
+                                numConfigurations > 0
+                              )
                             "
                             >mdi-pencil</v-icon
                           >
@@ -95,6 +133,8 @@
 import ParametersDialog from "./ParametersDialog";
 import DeleteDeviceDialog from "./DeleteDeviceDialog";
 import ConnectionStatusIcon from "./ConnectionStatusIcon";
+import LocalServicesExpansionPanel from "./LocalServicesExpansionPanel";
+import LocalConnectionStatusIcon from "./LocalConnectionStatusIcon.vue";
 export default {
   name: "DeviceCard",
   props: {
@@ -106,11 +146,19 @@ export default {
     ParametersDialog,
     DeleteDeviceDialog,
     ConnectionStatusIcon,
+    LocalServicesExpansionPanel,
+    LocalConnectionStatusIcon,
   },
   data: () => ({
     showDeleteDeviceDialog: false,
     showParametersDialog: false,
+    openedPanel: [],
+    localConnectionStatus: "unknown",
   }),
+  created() {
+    this.openedPanel = 0;
+    setTimeout(this.closeAllPanels, 10);
+  },
   computed: {
     deviceId() {
       return this.data.id;
@@ -141,6 +189,27 @@ export default {
       const lastKey = Object.keys(this.data.parameters).sort().reverse()[0];
       return this.data.parameters[lastKey];
     },
+    remotelyConnected() {
+      if (Object.prototype.hasOwnProperty.call(this.data, "connected")) {
+        return this.data.connected;
+      } else {
+        return -1;
+      }
+    },
+    services() {
+      if (Object.prototype.hasOwnProperty.call(this.data, "services")) {
+        return this.data["services"];
+      } else {
+        return {};
+      }
+    },
+    systemInfo() {
+      if (Object.prototype.hasOwnProperty.call(this.data, "system_info")) {
+        return this.data["system_info"];
+      } else {
+        return {};
+      }
+    },
   },
   methods: {
     deleteDevice() {
@@ -148,6 +217,12 @@ export default {
     },
     deleteDeviceConfiguration(config) {
       this.$store.dispatch("user/deleteDeviceConfiguration", config);
+    },
+    onLocalConnectionStatusUpdated(localConnectionStatus) {
+      this.localConnectionStatus = localConnectionStatus;
+    },
+    closeAllPanels() {
+      this.openedPanel = null;
     },
   },
 };
