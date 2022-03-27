@@ -9,6 +9,7 @@
           <LocalServiceListItem
             :service="serviceParams"
             :ipList="candidateIps"
+            :remoteConnectionStatus="remoteConnectionStatus"
             :key="index"
             @serviceStatusUpdated="onServiceStatusUpdated"
             v-for="(serviceParams, serviceName, index) in webServices"
@@ -31,6 +32,11 @@ export default {
     systemInfo: {
       type: Object,
       required: true,
+    },
+    remoteConnectionStatus: {
+      type: String,
+      required: false,
+      default: "online",
     },
   },
   components: {

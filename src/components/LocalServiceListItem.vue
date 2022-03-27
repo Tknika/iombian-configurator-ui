@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-list-item :key="serviceName">
+    <v-list-item>
       <v-list-item-content>
         <v-list-item-title>{{ serviceName }}</v-list-item-title>
       </v-list-item-content>
@@ -10,7 +10,7 @@
         >
       </v-list-item-action>
     </v-list-item>
-    <v-divider :key="serviceName"></v-divider>
+    <v-divider></v-divider>
   </div>
 </template>
 
@@ -25,6 +25,11 @@ export default {
     ipList: {
       type: Array,
       required: true,
+    },
+    remoteConnectionStatus: {
+      type: String,
+      required: false,
+      default: "online",
     },
   },
   data: () => ({
@@ -83,6 +88,12 @@ export default {
             url: this.serviceURL,
           });
         }
+      },
+    },
+    remoteConnectionStatus: {
+      handler: function (newStatus) {
+        if (newStatus == "online") setTimeout(this.checkStatus, 1000);
+        else if (newStatus != "online") setTimeout(this.checkStatus, 3000);
       },
     },
   },

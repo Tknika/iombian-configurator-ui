@@ -13,11 +13,15 @@
 import strftime from "strftime";
 
 export default {
-  name: "ConnectionStatusIcon",
+  name: "RemoteConnectionStatusIcon",
   props: {
     lastConnection: {
       type: Number,
       required: true,
+    },
+    remotelyConnected: {
+      type: Boolean,
+      default: true,
     },
   },
   data: () => ({
@@ -48,6 +52,7 @@ export default {
       );
     },
     connectionStatus() {
+      if (this.remotelyConnected != true) return "offline";
       const elapsedHours = this.lastConnectionElapsedHours;
       return elapsedHours == -2
         ? "legacy"
@@ -106,7 +111,7 @@ export default {
     connectionStatus: {
       deep: true,
       handler: function (newStatus) {
-        this.$emit("connectionStatusUpdated", newStatus);
+        this.$emit("remoteConnectionStatusUpdated", newStatus);
       },
     },
   },
