@@ -41,8 +41,7 @@ const actions = {
         db.collection("users").doc(context.state.id).collection("devices").doc(deviceId).set({
             creation_date: strftime("%Y-%m-%dT%H:%M:%S"),
             last_connection: 0,
-            parameters: {},
-            tunnels: {}
+            parameters: {}
         });
     }),
     deleteDevice: firestoreAction((context, deviceId) => {
