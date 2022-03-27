@@ -10,8 +10,8 @@
       <v-card-text>
         <v-form ref="tunnelform">
           <v-select
-            v-model="tunnelPort"
-            :items="tunnelServices"
+            v-model="selectedTunnelPort"
+            :items="webServices"
             item-value="port"
             item-text="name"
             label="Service"
@@ -22,7 +22,10 @@
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn text @click="close(false)">Cancel</v-btn>
-        <v-btn :disabled="!tunnelPort" color="primary" @click="close(true)"
+        <v-btn
+          :disabled="!selectedTunnelPort"
+          color="primary"
+          @click="close(true)"
           >Add</v-btn
         >
       </v-card-actions>
@@ -36,23 +39,20 @@ export default {
   props: {
     show: Boolean,
     deviceId: String,
+    services: Object,
   },
   data: () => ({
-    tunnelPort: "",
-    tunnelServices: [
-      {
-        name: "Node-RED",
-        type: "node-red",
-        port: "1880",
-        protocol: "http",
-      },
-      { name: "WeTTY", type: "wetty", protocol: "http", port: 3000 },
-    ],
+    selectedTunnelPort: "",
   }),
   computed: {
+    webServices() {
+      return Object.values(this.services).filter(
+        (service) => service["type"] == "web"
+      );
+    },
     tunnelService() {
-      return this.tunnelServices.find(
-        (service) => service.port === this.tunnelPort
+      return this.webServices.find(
+        (service) => service.port === this.selectedTunnelPort
       );
     },
   },
@@ -61,9 +61,9 @@ export default {
       if (create) {
         const tunnelPort = this.tunnelService["port"];
         const tunnelConfig = {
-          type: this.tunnelService["type"],
+          type: this.tunnelService["name"].replace(" ", "-").toLowerCase(),
           name: this.tunnelService["name"],
-          protocol: this.tunnelService["protocol"],
+          protocol: "http",
           creationTime: Date.now(),
           url: "",
         };

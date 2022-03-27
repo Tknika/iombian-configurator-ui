@@ -40,7 +40,7 @@
             Creation date: {{ creationDate }}
           </v-card-subtitle>
           <v-divider></v-divider>
-          <v-expansion-panels accordion v-model="openedPanel">
+          <v-expansion-panels accordion focusable v-model="openedPanel">
             <LocalServicesExpansionPanel
               :services="services"
               :systemInfo="systemInfo"
@@ -65,6 +65,7 @@
                   <NewTunnelDialog
                     :show="showNewTunnelDialog"
                     :deviceId="deviceId"
+                    :services="services"
                     @closed="showNewTunnelDialog = false"
                   />
                 </span>
