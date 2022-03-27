@@ -10,6 +10,7 @@
         >
       </v-list-item-action>
     </v-list-item>
+    <v-divider :key="serviceName"></v-divider>
   </div>
 </template>
 
