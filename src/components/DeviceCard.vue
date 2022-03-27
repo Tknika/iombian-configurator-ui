@@ -6,7 +6,10 @@
         <v-card>
           <v-card-title class="headline">
             {{ deviceId }}
-            <ConnectionStatusIcon :lastConnection="lastConnection" />
+            <ConnectionStatusIcon
+              :lastConnection="lastConnection"
+              @connectionStatusUpdated="onRemoteConnectionStatusUpdated"
+            />
             <LocalConnectionStatusIcon
               :localConnectionStatus="localConnectionStatus"
             />
@@ -37,12 +40,50 @@
             Creation date: {{ creationDate }}
           </v-card-subtitle>
           <v-divider></v-divider>
-          <v-expansion-panels accordion v-model="openedPanel">
+          <v-expansion-panels accordion focusable v-model="openedPanel">
             <LocalServicesExpansionPanel
               :services="services"
               :systemInfo="systemInfo"
               @localConnectionStatusUpdated="onLocalConnectionStatusUpdated"
             />
+            <v-expansion-panel
+              v-if="numTunnels != -1 && connectionStatus == 'online'"
+              :readonly="numTunnels == 0"
+            >
+              <v-expansion-panel-header
+                class="px-4"
+                :hide-actions="numTunnels == 0"
+              >
+                <span>
+                  <span class="mr-2" v-if="numTunnels > 0">
+                    Tunnels: {{ numTunnels }}
+                  </span>
+
+                  <v-btn small @click="showNewTunnelDialog = true"
+                    ><v-icon left>mdi-plus</v-icon>New Tunnel</v-btn
+                  >
+                  <NewTunnelDialog
+                    :show="showNewTunnelDialog"
+                    :deviceId="deviceId"
+                    :services="services"
+                    @closed="showNewTunnelDialog = false"
+                  />
+                </span>
+              </v-expansion-panel-header>
+              <v-expansion-panel-content>
+                <v-list dense>
+                  <v-fade-transition group>
+                    <TunnelListItem
+                      :deviceId="deviceId"
+                      :tunnelConfig="tunnelConfig"
+                      :tunnelPort="tunnelPort"
+                      :key="index"
+                      v-for="(tunnelConfig, tunnelPort, index) in tunnels"
+                    />
+                  </v-fade-transition>
+                </v-list>
+              </v-expansion-panel-content>
+            </v-expansion-panel>
             <v-expansion-panel :readonly="!numConfigurations">
               <v-expansion-panel-header
                 class="px-4"
@@ -131,10 +172,13 @@
 
 <script>
 import ParametersDialog from "./ParametersDialog";
+import NewTunnelDialog from "./NewTunnelDialog.vue";
 import DeleteDeviceDialog from "./DeleteDeviceDialog";
 import ConnectionStatusIcon from "./ConnectionStatusIcon";
 import LocalServicesExpansionPanel from "./LocalServicesExpansionPanel";
 import LocalConnectionStatusIcon from "./LocalConnectionStatusIcon.vue";
+import TunnelListItem from "./TunnelListItem";
+
 export default {
   name: "DeviceCard",
   props: {
@@ -144,16 +188,20 @@ export default {
   },
   components: {
     ParametersDialog,
+    NewTunnelDialog,
     DeleteDeviceDialog,
     ConnectionStatusIcon,
     LocalServicesExpansionPanel,
     LocalConnectionStatusIcon,
+    TunnelListItem,
   },
   data: () => ({
+    connectionStatus: "unknown",
     showDeleteDeviceDialog: false,
     showParametersDialog: false,
-    openedPanel: [],
     localConnectionStatus: "unknown",
+    showNewTunnelDialog: false,
+    openedPanel: [],
   }),
   created() {
     this.openedPanel = 0;
@@ -196,6 +244,13 @@ export default {
         return -1;
       }
     },
+    numTunnels() {
+      if (Object.prototype.hasOwnProperty.call(this.data, "tunnels")) {
+        return Object.keys(this.data.tunnels).length;
+      } else {
+        return -1;
+      }
+    },
     services() {
       if (Object.prototype.hasOwnProperty.call(this.data, "services")) {
         return this.data["services"];
@@ -210,6 +265,13 @@ export default {
         return {};
       }
     },
+    tunnels() {
+      if (Object.prototype.hasOwnProperty.call(this.data, "tunnels")) {
+        return this.data.tunnels;
+      } else {
+        return [];
+      }
+    },
   },
   methods: {
     deleteDevice() {
@@ -218,11 +280,29 @@ export default {
     deleteDeviceConfiguration(config) {
       this.$store.dispatch("user/deleteDeviceConfiguration", config);
     },
+    deleteDeviceTunnel(tunnelPort) {
+      this.$store.dispatch("user/deleteDeviceTunnel", {
+        deviceId: this.deviceId,
+        tunnelPort: tunnelPort,
+      });
+    },
+    onRemoteConnectionStatusUpdated(status) {
+      this.connectionStatus = status;
+    },
     onLocalConnectionStatusUpdated(localConnectionStatus) {
       this.localConnectionStatus = localConnectionStatus;
     },
     closeAllPanels() {
       this.openedPanel = null;
+    },
+  },
+  watch: {
+    numTunnels: {
+      deep: true,
+      handler: function (newValue) {
+        if (newValue == 0) this.openedPanel = null;
+        if (newValue > 0) this.openedPanel = 2;
+      },
     },
   },
 };
