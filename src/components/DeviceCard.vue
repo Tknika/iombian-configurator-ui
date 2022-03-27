@@ -6,9 +6,10 @@
         <v-card>
           <v-card-title class="headline">
             {{ deviceId }}
-            <ConnectionStatusIcon
+            <RemoteConnectionStatusIcon
               :lastConnection="lastConnection"
-              @connectionStatusUpdated="onRemoteConnectionStatusUpdated"
+              :remotelyConnected="remotelyConnected"
+              @remoteConnectionStatusUpdated="onRemoteConnectionStatusUpdated"
             />
             <LocalConnectionStatusIcon
               :localConnectionStatus="localConnectionStatus"
@@ -44,10 +45,11 @@
             <LocalServicesExpansionPanel
               :services="services"
               :systemInfo="systemInfo"
+              :remoteConnectionStatus="remoteConnectionStatus"
               @localConnectionStatusUpdated="onLocalConnectionStatusUpdated"
             />
             <v-expansion-panel
-              v-if="numTunnels != -1 && connectionStatus == 'online'"
+              v-if="numTunnels != -1 && remoteConnectionStatus == 'online'"
               :readonly="numTunnels == 0"
             >
               <v-expansion-panel-header
@@ -174,7 +176,7 @@
 import ParametersDialog from "./ParametersDialog";
 import NewTunnelDialog from "./NewTunnelDialog.vue";
 import DeleteDeviceDialog from "./DeleteDeviceDialog";
-import ConnectionStatusIcon from "./ConnectionStatusIcon";
+import RemoteConnectionStatusIcon from "./RemoteConnectionStatusIcon";
 import LocalServicesExpansionPanel from "./LocalServicesExpansionPanel";
 import LocalConnectionStatusIcon from "./LocalConnectionStatusIcon.vue";
 import TunnelListItem from "./TunnelListItem";
@@ -190,13 +192,13 @@ export default {
     ParametersDialog,
     NewTunnelDialog,
     DeleteDeviceDialog,
-    ConnectionStatusIcon,
+    RemoteConnectionStatusIcon,
     LocalServicesExpansionPanel,
     LocalConnectionStatusIcon,
     TunnelListItem,
   },
   data: () => ({
-    connectionStatus: "unknown",
+    remoteConnectionStatus: "unknown",
     showDeleteDeviceDialog: false,
     showParametersDialog: false,
     localConnectionStatus: "unknown",
@@ -241,7 +243,7 @@ export default {
       if (Object.prototype.hasOwnProperty.call(this.data, "connected")) {
         return this.data.connected;
       } else {
-        return -1;
+        return true;
       }
     },
     numTunnels() {
@@ -286,8 +288,8 @@ export default {
         tunnelPort: tunnelPort,
       });
     },
-    onRemoteConnectionStatusUpdated(status) {
-      this.connectionStatus = status;
+    onRemoteConnectionStatusUpdated(remoteConnectionstatus) {
+      this.remoteConnectionStatus = remoteConnectionstatus;
     },
     onLocalConnectionStatusUpdated(localConnectionStatus) {
       this.localConnectionStatus = localConnectionStatus;
