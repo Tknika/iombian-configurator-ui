@@ -16,7 +16,7 @@
           :width="7"
           color="white"
         >
-        <strong>{{ Math.round(bluetoothSynchingValue) }}%</strong>
+          <strong>{{ Math.round(bluetoothSynchingValue) }}%</strong>
         </v-progress-circular>
       </v-overlay>
       <v-toolbar dark color="primary">
@@ -26,14 +26,48 @@
         <v-toolbar-title>Configuration</v-toolbar-title>
         <v-spacer></v-spacer>
         <v-toolbar-items>
-          <v-btn v-if="serialAvailable && !$vuetify.breakpoint.xs" dark text @click="serialSync">Sync<v-icon right>mdi-usb-port</v-icon></v-btn>
-          <v-btn v-if="serialAvailable && $vuetify.breakpoint.xs" icon @click="serialSync"><v-icon>mdi-usb-port</v-icon></v-btn>
-          <v-btn v-if="bluetoothAvailable && !$vuetify.breakpoint.xs" dark text @click="bluetoothSync">Sync<v-icon right>mdi-bluetooth</v-icon></v-btn>
-          <v-btn v-if="bluetoothAvailable && $vuetify.breakpoint.xs" icon @click="bluetoothSync"><v-icon>mdi-bluetooth</v-icon></v-btn>
-          <v-btn v-if="pushEnabled && !$vuetify.breakpoint.xs" dark text @click="push">Push<v-icon right>mdi-cloud-upload</v-icon></v-btn>
-          <v-btn v-if="pushEnabled && $vuetify.breakpoint.xs" icon @click="push"><v-icon>mdi-cloud-upload</v-icon></v-btn>
-          <v-btn v-if="!$vuetify.breakpoint.xs" dark text @click="download">Download<v-icon right>mdi-download</v-icon></v-btn>
-          <v-btn v-if="$vuetify.breakpoint.xs" icon @click="download"><v-icon>mdi-download</v-icon></v-btn>
+          <v-btn
+            v-if="serialAvailable && !$vuetify.breakpoint.xs"
+            dark
+            text
+            @click="serialSync"
+            >Sync<v-icon right>mdi-usb-port</v-icon></v-btn
+          >
+          <v-btn
+            v-if="serialAvailable && $vuetify.breakpoint.xs"
+            icon
+            @click="serialSync"
+            ><v-icon>mdi-usb-port</v-icon></v-btn
+          >
+          <v-btn
+            v-if="bluetoothAvailable && !$vuetify.breakpoint.xs"
+            dark
+            text
+            @click="bluetoothSync"
+            >Sync<v-icon right>mdi-bluetooth</v-icon></v-btn
+          >
+          <v-btn
+            v-if="bluetoothAvailable && $vuetify.breakpoint.xs"
+            icon
+            @click="bluetoothSync"
+            ><v-icon>mdi-bluetooth</v-icon></v-btn
+          >
+          <v-btn
+            v-if="pushEnabled && !$vuetify.breakpoint.xs"
+            dark
+            text
+            @click="push"
+            >Push<v-icon right>mdi-cloud-upload</v-icon></v-btn
+          >
+          <v-btn v-if="pushEnabled && $vuetify.breakpoint.xs" icon @click="push"
+            ><v-icon>mdi-cloud-upload</v-icon></v-btn
+          >
+          <v-btn v-if="!$vuetify.breakpoint.xs" dark text @click="download"
+            >Download<v-icon right>mdi-download</v-icon></v-btn
+          >
+          <v-btn v-if="$vuetify.breakpoint.xs" icon @click="download"
+            ><v-icon>mdi-download</v-icon></v-btn
+          >
         </v-toolbar-items>
       </v-toolbar>
       <v-container>
@@ -61,13 +95,13 @@
 <script>
 import { apiKey, projectId } from "../main";
 import default_parameters from "../assets/default_parameters";
-import SystemCard from "./SystemCard";
-import UserCard from "./UserCard";
-import NetworkCard from "./NetworkCard";
+import SystemCard from "./SystemCard.vue";
+import UserCard from "./UserCard.vue";
+import NetworkCard from "./NetworkCard.vue";
 import yamlHandler from "js-yaml";
 import fileSaver from "file-saver";
 import strftime from "strftime";
-import * as fflate from 'fflate';
+import * as fflate from "fflate";
 
 export default {
   name: "ParametersDialog",
@@ -106,7 +140,7 @@ export default {
       };
       Object.assign(this.parameters, config_date);
     },
-    open(deviceId, parameters, pushEnabled=false) {
+    open(deviceId, parameters, pushEnabled = false) {
       this.show = true;
       this.deviceId = deviceId;
       this.pushEnabled = pushEnabled;
@@ -148,7 +182,7 @@ export default {
     },
     async bluetoothSync() {
       function sleepMs(duration) {
-        return new Promise(resolve => setTimeout(() => resolve(), duration));
+        return new Promise((resolve) => setTimeout(() => resolve(), duration));
       }
 
       this.setConfigDate();
@@ -173,16 +207,22 @@ export default {
 
         var paramsChunks = [];
         for (const category in this.parameters) {
-          const params_string = JSON.stringify({ [category]: this.parameters[category] });
+          const params_string = JSON.stringify({
+            [category]: this.parameters[category],
+          });
           const params_encoded = new TextEncoder().encode(params_string);
           const params = fflate.compressSync(params_encoded);
 
           if (params.length > 512) {
             for (const subcategory in this.parameters[category]) {
-              const params_string = JSON.stringify({ [category]: { [subcategory]: this.parameters[category][subcategory] } });
+              const params_string = JSON.stringify({
+                [category]: {
+                  [subcategory]: this.parameters[category][subcategory],
+                },
+              });
               const params_encoded = new TextEncoder().encode(params_string);
               const params = fflate.compressSync(params_encoded);
-              paramsChunks.push(params)
+              paramsChunks.push(params);
             }
           } else {
             paramsChunks.push(params);
@@ -233,17 +273,21 @@ export default {
       }
     },
     async serialSync() {
-      const raspberryPi4filter = { usbVendorId: 0x0525, usbProductId: 0xa4a7 }
+      const raspberryPi4filter = { usbVendorId: 0x0525, usbProductId: 0xa4a7 };
 
       this.setConfigDate();
 
       try {
-        const port = await navigator.serial.requestPort({ filters: [raspberryPi4filter] });
+        const port = await navigator.serial.requestPort({
+          filters: [raspberryPi4filter],
+        });
         await port.open({ baudRate: 115200 });
 
         const writer = port.writable.getWriter();
 
-        const encoded_parameters = new TextEncoder().encode(JSON.stringify(this.parameters));
+        const encoded_parameters = new TextEncoder().encode(
+          JSON.stringify(this.parameters)
+        );
 
         await writer.write(encoded_parameters);
 
@@ -257,20 +301,14 @@ export default {
           case "No port selected by the user.":
             break;
           case "Failed to open serial port.":
-            this.showSnackbar(
-              "Failed to open serial port",
-              "error"
-            );
+            this.showSnackbar("Failed to open serial port", "error");
             break;
           default:
-            this.showSnackbar(
-              "Configuration synchronization failed",
-              "error"
-            );
+            this.showSnackbar("Configuration synchronization failed", "error");
             console.log(error.message);
         }
       }
-    }
+    },
   },
 };
 </script>

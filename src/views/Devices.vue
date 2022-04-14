@@ -24,8 +24,8 @@
 </template>
 
 <script>
-import DeviceCard from "../components/DeviceCard";
-import NewDeviceDialog from "../components/NewDeviceDialog";
+import DeviceCard from "../components/DeviceCard.vue";
+import NewDeviceDialog from "../components/NewDeviceDialog.vue";
 export default {
   name: "Devices",
   components: {

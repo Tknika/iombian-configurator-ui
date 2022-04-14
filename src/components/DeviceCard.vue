@@ -173,13 +173,13 @@
 </template>
 
 <script>
-import ParametersDialog from "./ParametersDialog";
+import ParametersDialog from "./ParametersDialog.vue";
 import NewTunnelDialog from "./NewTunnelDialog.vue";
-import DeleteDeviceDialog from "./DeleteDeviceDialog";
-import RemoteConnectionStatusIcon from "./RemoteConnectionStatusIcon";
-import LocalServicesExpansionPanel from "./LocalServicesExpansionPanel";
+import DeleteDeviceDialog from "./DeleteDeviceDialog.vue";
+import RemoteConnectionStatusIcon from "./RemoteConnectionStatusIcon.vue";
+import LocalServicesExpansionPanel from "./LocalServicesExpansionPanel.vue";
 import LocalConnectionStatusIcon from "./LocalConnectionStatusIcon.vue";
-import TunnelListItem from "./TunnelListItem";
+import TunnelListItem from "./TunnelListItem.vue";
 
 export default {
   name: "DeviceCard",
