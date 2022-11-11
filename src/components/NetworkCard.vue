@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import InterfaceCard from "./InterfaceCard";
+import InterfaceCard from "./InterfaceCard.vue";
 export default {
   name: "NetworkCard",
   components: {
@@ -68,7 +68,7 @@ export default {
       this.$delete(this.networkParams, ifaceName);
     },
     numNamedInterfaces(name) {
-      return Object.keys(this.networkParams).filter(ifaceName =>
+      return Object.keys(this.networkParams).filter((ifaceName) =>
         ifaceName.startsWith(name)
       ).length;
     },

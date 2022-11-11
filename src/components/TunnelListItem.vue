@@ -27,7 +27,7 @@
 
 
 <script>
-import TunnelStatusIcon from "./TunnelStatusIcon";
+import TunnelStatusIcon from "./TunnelStatusIcon.vue";
 export default {
   name: "TunnelListItem",
   props: {
