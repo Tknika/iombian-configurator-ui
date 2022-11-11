@@ -1,6 +1,5 @@
 <template>
   <v-app>
-    <img src="/favicon.svg" alt="PWA Logo" width="150" height="150">
     <ReloadPrompt />
     <AppBar />
     <v-main>
