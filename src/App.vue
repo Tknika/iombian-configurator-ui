@@ -1,6 +1,5 @@
 <template>
   <v-app>
-    <ReloadPrompt />
     <AppBar />
     <v-main>
       <router-view></router-view>
@@ -9,7 +8,6 @@
 </template>
 
 <script>
-import ReloadPrompt from "./components/ReloadPrompt.vue";
 import AppBar from "./components/AppBar.vue";
 
 export default {
