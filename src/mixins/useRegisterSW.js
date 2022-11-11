@@ -1,10 +1,12 @@
 export default {
   name: "useRegisterSW",
+
   data: () => ({
     updateSW: undefined,
     offlineReady: false,
     needRefresh: false
   }),
+
   async mounted() {
     try {
       const { registerSW } = await import("virtual:pwa-register")
@@ -23,8 +25,8 @@ export default {
     } catch {
       console.log("PWA disabled.")
     }
-
   },
+
   methods: {
     async closePrompt() {
       this.offlineReady = false
@@ -34,9 +36,10 @@ export default {
       console.log("onOfflineReady")
     },
     onNeedRefreshFn() {
-      console.log("onNeedRefresh")
+      console.log("App must be refreshed")
     },
     updateServiceWorker() {
+      console.log("Reloading app...")
       this.updateSW && this.updateSW(true)
     }
   }
