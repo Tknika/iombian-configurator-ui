@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import LocalServiceListItem from "./LocalServiceListItem.vue";
+import LocalServiceListItem from "./LocalServiceListItem";
 export default {
   name: "LocalServicesExpansionPanel",
   props: {
