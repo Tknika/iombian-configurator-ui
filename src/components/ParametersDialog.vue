@@ -19,7 +19,7 @@
           <strong>{{ Math.round(bluetoothSynchingValue) }}%</strong>
         </v-progress-circular>
       </v-overlay>
-      <v-toolbar dark color="primary">
+      <v-toolbar dark color="#233167">
         <v-btn icon dark @click="show = false">
           <v-icon>mdi-close</v-icon>
         </v-btn>
