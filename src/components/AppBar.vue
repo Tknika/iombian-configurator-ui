@@ -1,7 +1,8 @@
 <template>
   <div>
     <v-app-bar app color="#233167" dark>
-      <v-toolbar-title><h3>{{ appName }}</h3></v-toolbar-title>
+      <v-img v-if="userId" src="/favicon.svg" alt="IoMBian Configurator Logo" max-height="35" max-width="35"></v-img>
+      <v-app-bar-title v-if="userId" class="ml-2"><h3>{{ appName }}</h3></v-app-bar-title>
       <v-btn v-if="pwaInstallPrompt && !$vuetify.breakpoint.xs" class="ml-2" icon @click="installPWA"><v-icon>mdi-monitor-arrow-down</v-icon></v-btn>
       <v-btn v-if="pwaInstallPrompt && $vuetify.breakpoint.xs" class="ml-2" icon @click="installPWA"><v-icon>mdi-cellphone-arrow-down</v-icon></v-btn>
       <v-spacer></v-spacer>
