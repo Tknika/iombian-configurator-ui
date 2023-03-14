@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-img src="/src/assets/logo.svg" alt="IoMBian Configurator Logo" contain height="200"></v-img>
+    <v-img src="/logo.svg" alt="IoMBian Configurator Logo" contain height="200"></v-img>
     <v-card class="mx-auto" style="max-width: 500px">
       <v-overlay :value="isLoading">
         <v-progress-circular
