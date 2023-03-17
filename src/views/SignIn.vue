@@ -1,48 +1,51 @@
 <template>
-  <v-card class="mx-auto" style="max-width: 500px">
-    <v-overlay :value="isLoading">
-      <v-progress-circular
-        color="primary"
-        indeterminate
-        size="64"
-      ></v-progress-circular>
-    </v-overlay>
-    <v-form v-model="validCredentials" class="pa-4 mt-6">
-      <v-text-field
-        v-model="email"
-        filled
-        append-icon="mdi-email-outline"
-        label="Email"
-        type="email"
-        :rules="emailRules"
-      ></v-text-field>
-      <v-text-field
-        v-model="password"
-        filled
-        append-icon="mdi-lock-outline"
-        label="Password"
-        type="password"
-        style="min-height: 96px"
-        :rules="[v => !!v || 'Password is required']"
-      ></v-text-field>
-    </v-form>
-    <v-alert v-if="errorMsg" border="top" color="red" class="ml-5 mr-5">{{
-      errorMsg
-    }}</v-alert>
-    <v-divider></v-divider>
-    <v-card-actions>
-      <v-btn depressed @click="signUp">Sign Up</v-btn>
-      <v-spacer></v-spacer>
-      <v-btn @click="signInAnonymously"><v-icon :left=!$vuetify.breakpoint.xs>mdi-incognito</v-icon>{{ $vuetify.breakpoint.xs ? '' : 'Anonymous'}}</v-btn>
-      <v-btn @click="signInWithGoogle"><v-icon :left=!$vuetify.breakpoint.xs>mdi-google</v-icon>{{ $vuetify.breakpoint.xs ? '' : 'Google'}}</v-btn>
-      <v-btn
-        :disabled="!validCredentials"
-        color="primary"
-        @click="signInWithEmailAndPassword"
-        ><v-icon left v-if=!$vuetify.breakpoint.xs>mdi-login</v-icon>Login</v-btn
-      >
-    </v-card-actions>
-  </v-card>
+  <div>
+    <v-img src="/logo.svg" alt="IoMBian Configurator Logo" contain height="200"></v-img>
+    <v-card class="mx-auto" style="max-width: 500px">
+      <v-overlay :value="isLoading">
+        <v-progress-circular
+          color="primary"
+          indeterminate
+          size="64"
+        ></v-progress-circular>
+      </v-overlay>
+      <v-form v-model="validCredentials" class="pa-4">
+        <v-text-field
+          v-model="email"
+          filled
+          append-icon="mdi-email-outline"
+          label="Email"
+          type="email"
+          :rules="emailRules"
+        ></v-text-field>
+        <v-text-field
+          v-model="password"
+          filled
+          append-icon="mdi-lock-outline"
+          label="Password"
+          type="password"
+          style="min-height: 96px"
+          :rules="[v => !!v || 'Password is required']"
+        ></v-text-field>
+      </v-form>
+      <v-alert v-if="errorMsg" border="top" color="red" class="ml-5 mr-5">{{
+        errorMsg
+      }}</v-alert>
+      <v-divider></v-divider>
+      <v-card-actions>
+        <v-btn depressed @click="signUp">Sign Up</v-btn>
+        <v-spacer></v-spacer>
+        <v-btn @click="signInAnonymously"><v-icon :left=!$vuetify.breakpoint.xs>mdi-incognito</v-icon>{{ $vuetify.breakpoint.xs ? '' : 'Anonymous'}}</v-btn>
+        <v-btn @click="signInWithGoogle"><v-icon :left=!$vuetify.breakpoint.xs>mdi-google</v-icon>{{ $vuetify.breakpoint.xs ? '' : 'Google'}}</v-btn>
+        <v-btn
+          :disabled="!validCredentials"
+          color="primary"
+          @click="signInWithEmailAndPassword"
+          ><v-icon left v-if=!$vuetify.breakpoint.xs>mdi-login</v-icon>Login</v-btn
+        >
+      </v-card-actions>
+    </v-card>
+  </div>
 </template>
 
 <script>
