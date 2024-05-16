@@ -1,111 +1,70 @@
 <template>
-  <v-dialog
-    v-model="show"
-    ma="4"
-    fullscreen
-    hide-overlay
-    transition="dialog-bottom-transition"
-  >
-    <v-card v-if="render">
-      <v-overlay :value="bluetoothSynchingState">
-        <v-progress-circular
-          :active="bluetoothSynchingState"
-          :value="bluetoothSynchingValue"
-          :rotate="-90"
-          :size="100"
-          :width="7"
-          color="white"
-        >
-          <strong>{{ Math.round(bluetoothSynchingValue) }}%</strong>
-        </v-progress-circular>
-      </v-overlay>
-      <v-toolbar dark color="#233167">
-        <v-btn icon dark @click="show = false">
-          <v-icon>mdi-close</v-icon>
-        </v-btn>
-        <v-toolbar-title>Configuration</v-toolbar-title>
-        <v-spacer></v-spacer>
-        <v-toolbar-items>
-          <v-btn
-            v-if="serialAvailable && !$vuetify.breakpoint.xs"
-            dark
-            text
-            @click="serialSync"
-            >Sync<v-icon right>mdi-usb-port</v-icon></v-btn
-          >
-          <v-btn
-            v-if="serialAvailable && $vuetify.breakpoint.xs"
-            icon
-            @click="serialSync"
-            ><v-icon>mdi-usb-port</v-icon></v-btn
-          >
-          <v-btn
-            v-if="bluetoothAvailable && !$vuetify.breakpoint.xs"
-            dark
-            text
-            @click="bluetoothSync"
-            >Sync<v-icon right>mdi-bluetooth</v-icon></v-btn
-          >
-          <v-btn
-            v-if="bluetoothAvailable && $vuetify.breakpoint.xs"
-            icon
-            @click="bluetoothSync"
-            ><v-icon>mdi-bluetooth</v-icon></v-btn
-          >
-          <v-btn
-            v-if="pushEnabled && !$vuetify.breakpoint.xs"
-            dark
-            text
-            @click="push"
-            >Push<v-icon right>mdi-cloud-upload</v-icon></v-btn
-          >
-          <v-btn v-if="pushEnabled && $vuetify.breakpoint.xs" icon @click="push"
-            ><v-icon>mdi-cloud-upload</v-icon></v-btn
-          >
-          <v-btn v-if="!$vuetify.breakpoint.xs" dark text @click="download"
-            >Download<v-icon right>mdi-download</v-icon></v-btn
-          >
-          <v-btn v-if="$vuetify.breakpoint.xs" icon @click="download"
-            ><v-icon>mdi-download</v-icon></v-btn
-          >
-        </v-toolbar-items>
-      </v-toolbar>
-      <v-container>
-        <v-form>
-          <v-row>
-            <v-col cols="12">
-              <SystemCard :deviceId="deviceId" :sysParams="parameters.system" />
-            </v-col>
-            <v-col cols="12">
-              <UserCard :userParams="parameters.user" />
-            </v-col>
-            <v-col cols="12">
-              <NetworkCard :networkParams="parameters.networking" />
-            </v-col>
-            <v-col cols="12">
-              <InstalledServicesCard />
-            </v-col>
-          </v-row>
-        </v-form>
-      </v-container>
-      <v-snackbar v-model="snackbarState" timeout="4000" :color="snackbarColor"
-        >{{ snackbarText }}
-      </v-snackbar>
-    </v-card>
-  </v-dialog>
+  <div>
+    <v-overlay :value="bluetoothSynchingState">
+      <v-progress-circular :active="bluetoothSynchingState" :value="bluetoothSynchingValue" :rotate="-90" :size="100"
+        :width="7" color="white">
+        <strong>{{ Math.round(bluetoothSynchingValue) }}%</strong>
+      </v-progress-circular>
+    </v-overlay>
+    <v-toolbar dark color="#233167">
+      <v-btn icon dark @click="show = false">
+        <v-icon>mdi-close</v-icon>
+      </v-btn>
+      <v-toolbar-title>Configuration</v-toolbar-title>
+      <v-spacer></v-spacer>
+      <v-toolbar-items>
+        <v-btn v-if="serialAvailable && !$vuetify.breakpoint.xs" dark text @click="serialSync">Sync<v-icon
+            right>mdi-usb-port</v-icon></v-btn>
+        <v-btn v-if="serialAvailable && $vuetify.breakpoint.xs" icon
+          @click="serialSync"><v-icon>mdi-usb-port</v-icon></v-btn>
+        <v-btn v-if="bluetoothAvailable && !$vuetify.breakpoint.xs" dark text @click="bluetoothSync">Sync<v-icon
+            right>mdi-bluetooth</v-icon></v-btn>
+        <v-btn v-if="bluetoothAvailable && $vuetify.breakpoint.xs" icon
+          @click="bluetoothSync"><v-icon>mdi-bluetooth</v-icon></v-btn>
+        <v-btn v-if="pushEnabled && !$vuetify.breakpoint.xs" dark text @click="push">Push<v-icon
+            right>mdi-cloud-upload</v-icon></v-btn>
+        <v-btn v-if="pushEnabled && $vuetify.breakpoint.xs" icon @click="push"><v-icon>mdi-cloud-upload</v-icon></v-btn>
+        <v-btn v-if="!$vuetify.breakpoint.xs" dark text @click="download">Download<v-icon
+            right>mdi-download</v-icon></v-btn>
+        <v-btn v-if="$vuetify.breakpoint.xs" icon @click="download"><v-icon>mdi-download</v-icon></v-btn>
+      </v-toolbar-items>
+    </v-toolbar>
+    <v-container>
+      <v-form>
+        <v-row>
+          <v-col cols="12">
+            <SystemCard :deviceId="deviceId" :sysParams="parameters.system" />
+          </v-col>
+          <v-col cols="12">
+            <UserCard :userParams="parameters.user" />
+          </v-col>
+          <v-col cols="12">
+            <NetworkCard :networkParams="parameters.networking" />
+          </v-col>
+          <v-col cols="12">
+            <InstalledServicesCard :installedServices="installedServices" />
+          </v-col>
+        </v-row>
+      </v-form>
+    </v-container>
+    <v-snackbar v-model="snackbarState" timeout="4000" :color="snackbarColor">{{ snackbarText }}
+    </v-snackbar>
+  </div>
 </template>
 
 <script>
 import { apiKey, projectId } from "../main";
 import default_parameters from "../assets/default_parameters";
-import SystemCard from "./SystemCard.vue";
-import UserCard from "./UserCard.vue";
-import NetworkCard from "./NetworkCard.vue";
+import SystemCard from "../components/SystemCard.vue";
+import UserCard from "../components/UserCard.vue";
+import NetworkCard from "../components/NetworkCard.vue";
 import yamlHandler from "js-yaml";
 import fileSaver from "file-saver";
 import strftime from "strftime";
 import * as fflate from "fflate";
-import InstalledServicesCard from "./InstalledServicesCard.vue"
+import InstalledServicesCard from "../components/InstalledServicesCard.vue"
+
+import { db } from "../main"
 
 export default {
   name: "ParametersDialog",
@@ -116,10 +75,7 @@ export default {
     InstalledServicesCard,
   },
   data: () => ({
-    show: false,
-    render: false,
     deviceId: null,
-    parameters: {},
     pushEnabled: false,
     bluetoothAvailable: false,
     bluetoothSynchingState: false,
@@ -129,14 +85,22 @@ export default {
     snackbarText: "",
     snackbarColor: "success",
   }),
-  watch: {
-    show: function (val) {
-      val
-        ? (this.render = true)
-        : setTimeout(() => {
-            this.render = false;
-          }, 350);
+  created() {
+    this.deviceId = this.$route.params.id;
+    this.$store.dispatch("deviceServices/setDeviceId", this.deviceId)
+    this.$store.dispatch("deviceServices/bindFieldsRef");
+    this.$store.dispatch("deviceServices/bindServicesRef");
+    this.setConfigDate();
+  },
+  computed: {
+    parameters() {
+      const params = this.$store.state.deviceServices.fields.parameters;
+      const firstDate = Object.keys(params)[0]
+      return params[firstDate];
     },
+    installedServices() {
+      return this.$store.state.deviceServices.installedServices;
+    }
   },
   methods: {
     setConfigDate() {

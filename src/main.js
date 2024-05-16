@@ -1,20 +1,30 @@
-import Vue from 'vue'
-import App from './App.vue'
-import router from './router'
-import store from './store'
-import vuetify from './plugins/vuetify';
-import firebase from 'firebase/app';
-import 'firebase/firestore';
+import Vue from "vue";
+import App from "./App.vue";
+import router from "./router";
+import store from "./store";
+import vuetify from "./plugins/vuetify";
+import firebase from "firebase/app";
+import "firebase/firestore";
 
-Vue.config.productionTip = false
+Vue.config.productionTip = false;
 
-var firebaseConfig = {
-  apiKey: "AIzaSyDxn26nFwMbKU3PK8759M7b7kn7skMfOpo",
-  authDomain: "iombian-configurator-tes-90623.firebaseapp.com",
-  projectId: "iombian-configurator-tes-90623",
-  storageBucket: "iombian-configurator-tes-90623.appspot.com",
-  messagingSenderId: "526131974785",
-  appId: "1:526131974785:web:b3f0cd80503a14745fb380"
+// var firebaseConfig = {
+//   apiKey: "AIzaSyDLoQVbGfi7fN-FQrlO9k8rPVX7G0w75Ks",
+//   authDomain: "iombian-configurator.firebaseapp.com",
+//   projectId: "iombian-configurator",
+//   storageBucket: "iombian-configurator.appspot.com",
+//   messagingSenderId: "594894421010",
+//   appId: "1:594894421010:web:03688fd63addc0acc02ccb",
+//   measurementId: "G-B4NNN1TW32"
+// };
+
+const firebaseConfig = {
+	apiKey: "AIzaSyDxn26nFwMbKU3PK8759M7b7kn7skMfOpo",
+	authDomain: "iombian-configurator-tes-90623.firebaseapp.com",
+	projectId: "iombian-configurator-tes-90623",
+	storageBucket: "iombian-configurator-tes-90623.appspot.com",
+	messagingSenderId: "526131974785",
+	appId: "1:526131974785:web:b3f0cd80503a14745fb380",
 };
 
 // Initialize Firebase
@@ -25,8 +35,8 @@ export const apiKey = firebaseConfig.apiKey;
 export const projectId = firebaseConfig.projectId;
 
 new Vue({
-  router,
-  store,
-  vuetify,
-  render: h => h(App)
-}).$mount('#app')
+	router,
+	store,
+	vuetify,
+	render: (h) => h(App),
+}).$mount("#app");

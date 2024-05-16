@@ -2,6 +2,8 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import VuexPersist from 'vuex-persist';
 import user from './modules/user';
+import deviceServices from './modules/deviceServices';
+import marketplaceServices from './modules/marketplaceServices';
 import {vuexfireMutations} from 'vuexfire';
 
 const vuexLocal = new VuexPersist({
@@ -19,7 +21,9 @@ export default new Vuex.Store({
   actions: {
   },
   modules: {
-    user
+    user,
+	deviceServices,
+	marketplaceServices,
   },
   plugins: [vuexLocal.plugin],
 })

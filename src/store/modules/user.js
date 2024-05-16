@@ -9,7 +9,7 @@ const state = {
     name: null,
     email: null,
     refreshToken: null,
-    devices: []
+    devices: [],
 }
 
 const mutations = {
@@ -35,7 +35,10 @@ const actions = {
         context.commit('CLEAR_USER_DATA');
     },
     bindDevicesRef: firestoreAction(context => {
-        return context.bindFirestoreRef("devices", db.collection('users').doc(context.state.id).collection("devices"));
+        const dispatch = context.bindFirestoreRef("devices", db.collection('users').doc(context.state.id).collection("devices"));
+		// console.log(dispatch);
+		
+		return dispatch;
     }),
     addDevice: firestoreAction((context, deviceId) => {
         db.collection("users").doc(context.state.id).collection("devices").doc(deviceId).set({

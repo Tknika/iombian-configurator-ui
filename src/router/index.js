@@ -22,6 +22,11 @@ const routes = [
     component: Devices,
     beforeEnter: guard
   },
+  {
+	path: '/:id',
+	name: 'Device',
+	component: () => import('../views/Device.vue')
+	}
 ]
 
 function guard(to, from, next) {
