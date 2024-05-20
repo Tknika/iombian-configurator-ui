@@ -90,6 +90,7 @@ export default {
     this.$store.dispatch("deviceServices/setDeviceId", this.deviceId)
     this.$store.dispatch("deviceServices/bindFieldsRef");
     this.$store.dispatch("deviceServices/bindServicesRef");
+    this.$store.dispatch("marketplaceServices/bindServicesRef");
     this.setConfigDate();
   },
   computed: {

@@ -35,10 +35,7 @@ const actions = {
         context.commit('CLEAR_USER_DATA');
     },
     bindDevicesRef: firestoreAction(context => {
-        const dispatch = context.bindFirestoreRef("devices", db.collection('users').doc(context.state.id).collection("devices"));
-		// console.log(dispatch);
-		
-		return dispatch;
+		return context.bindFirestoreRef("devices", db.collection('users').doc(context.state.id).collection("devices"));
     }),
     addDevice: firestoreAction((context, deviceId) => {
         db.collection("users").doc(context.state.id).collection("devices").doc(deviceId).set({
