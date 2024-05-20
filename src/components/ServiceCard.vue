@@ -4,7 +4,7 @@
       <v-card>
         <v-card-text>
           <div class="text-subtitle-1">
-            {{ labels[id]["name"] }}
+            {{ name }}
           </div>
         </v-card-text>
         <v-spacer></v-spacer>
@@ -27,20 +27,42 @@ export default {
       type: String
     },
   },
+  data() {
+    return {
+      name: "Name"
+    }
+  },
   created() {
     this.loadServiceInfo();
   },
+  destroyed() {
+    this.deleteServiceInfo();
+  },
   computed: {
     labels() {
+      console.log("Hola")
       return this.$store.state.marketplaceServices.services[this.id].labels
     }
   },
   methods: {
     loadServiceInfo() {
-      this.$store.dispatch("marketplaceServices/bindServicesRef", { deviceId: this.id, version: this.version }).then(_ => {
-        console.log(this.$store.state.marketplaceServices.services[this.id]);
-      });
+      this.$store.dispatch("marketplaceServices/bindServicesRef", { serviceId: this.id, version: this.version }).then(service => {
+        console.log(service.labels[this.id].name);
+        this.name = service.labels[this.id].name;
+      })
     },
+    deleteServiceInfo() {
+      this.$store.dispatch("marketplaceServices/unbindServicesRef", this.id);
+      this.$store.dispatch("marketplaceServices/removeServiceFromServices", this.id);
+    }
+  },
+  watch: {
+    "this.$store.state.marketplaceServices.services": {
+      deep: true,
+      handler: function (newValue) {
+        console.log("Mereketengue")
+      }
+    }
   }
 }
 </script>
