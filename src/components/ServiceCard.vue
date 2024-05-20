@@ -9,7 +9,7 @@
         </v-card-text>
         <v-spacer></v-spacer>
         <v-card-actions>
-          <v-btn color="primary">Install</v-btn>
+          <v-btn color="error" @click="uninstallService()">Uninstall</v-btn>
         </v-card-actions>
       </v-card>
     </v-col>
@@ -27,7 +27,6 @@ export default {
       type: String
     },
   },
-  created() { },
   computed: {
     service() {
       return this.$store.state.marketplaceServices.services.find(
@@ -35,5 +34,11 @@ export default {
       )
     }
   },
+  methods: {
+    uninstallService() {
+      console.log("zangano")
+      this.$store.dispatch("deviceServices/unsintallService", this.id)
+    }
+  }
 }
 </script>
