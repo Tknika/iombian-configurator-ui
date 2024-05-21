@@ -4,7 +4,7 @@ import { db } from "../../main";
 const state = {
 	id: null,
 	fields: null,
-	installedServices: [],
+	services: [],
 };
 
 const mutations = {
@@ -34,7 +34,7 @@ const actions = {
 	bindServicesRef: firestoreAction((context) => {
 		const userId = context.rootState.user.id;
 		return context.bindFirestoreRef(
-			"installedServices",
+			"services",
 			db
 				.collection("users")
 				.doc(userId)
@@ -42,6 +42,26 @@ const actions = {
 				.doc(context.state.id)
 				.collection("installed_services")
 		);
+	}),
+	installService: firestoreAction((context, { id, version, envs }) => {
+		const userId = context.rootState.user.id;
+		db.collection("users")
+			.doc(userId)
+			.collection("devices")
+			.doc(context.state.id)
+			.collection("installed_services")
+			.doc(id)
+			.set({ version, env: envs });
+	}),
+	uninstallService: firestoreAction((context, id) => {
+		const userId = context.rootState.user.id;
+		db.collection("users")
+			.doc(userId)
+			.collection("devices")
+			.doc(context.state.id)
+			.collection("installed_services")
+			.doc(id)
+			.delete();
 	}),
 };
 

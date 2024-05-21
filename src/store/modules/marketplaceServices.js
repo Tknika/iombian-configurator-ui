@@ -6,10 +6,11 @@ const state = {
 };
 
 const actions = {
-	bindServicesRef: firestoreAction((context) => {
+	bindMarketplaceServicesRef: firestoreAction((context) => {
+		console.log("hola");
 		return context.bindFirestoreRef("services", db.collectionGroup("versions"));
 	}),
-	unbindServicesRef: firestoreAction((context) => {
+	unbindMarketplaceServicesRef: firestoreAction((context) => {
 		return context.unbindFirestoreRef("services");
 	}),
 };

@@ -7,8 +7,8 @@
       <v-row>
         <v-col cols="12">
           <ul style="list-style-type: none;">
-            <li v-for="(service, index) in installedServices" :key="index">
-              <ServiceCard :id="service.id" :version="service.version"></ServiceCard>
+            <li v-for="(service, index) in services" :key="index">
+              <ServiceCard :service="service" :installed="true"></ServiceCard>
             </li>
           </ul>
         </v-col>
@@ -26,7 +26,7 @@ export default {
     ServiceCard
   },
   props: {
-    installedServices: {
+    services: {
       type: []
     }
   },

@@ -42,7 +42,10 @@
             <NetworkCard :networkParams="parameters.networking" />
           </v-col>
           <v-col cols="12">
-            <InstalledServicesCard :installedServices="installedServices" />
+            <InstalledServicesCard :services="installedServices" />
+          </v-col>
+          <v-col cols="12">
+            <MoreServicesCard :services="notInstalledServices" />
           </v-col>
         </v-row>
       </v-form>
@@ -63,8 +66,8 @@ import fileSaver from "file-saver";
 import strftime from "strftime";
 import * as fflate from "fflate";
 import InstalledServicesCard from "../components/InstalledServicesCard.vue"
-
-import { db } from "../main"
+import MoreServicesCard from "../components/MoreServicesCard.vue"
+import semver from "semver"
 
 export default {
   name: "ParametersDialog",
@@ -73,6 +76,7 @@ export default {
     UserCard,
     NetworkCard,
     InstalledServicesCard,
+    MoreServicesCard
   },
   data: () => ({
     deviceId: null,
@@ -90,7 +94,6 @@ export default {
     this.$store.dispatch("deviceServices/setDeviceId", this.deviceId)
     this.$store.dispatch("deviceServices/bindFieldsRef");
     this.$store.dispatch("deviceServices/bindServicesRef");
-    this.$store.dispatch("marketplaceServices/bindServicesRef");
     this.setConfigDate();
   },
   computed: {
@@ -100,8 +103,26 @@ export default {
       return params[firstDate];
     },
     installedServices() {
-      return this.$store.state.deviceServices.installedServices;
-    }
+      return this.$store.state.deviceServices.services.map(({ id, version }) => (
+        this.$store.state.marketplaceServices.services.find(
+          (service) => (service.labels.version == version && service.labels.id == id))
+      )).map(({ labels }) => labels)
+    },
+    notInstalledServices() {
+      let allServices = this.$store.state.marketplaceServices.services
+      const installedIds = this.$store.state.deviceServices.services.map(({id}) => id);
+      allServices = Object.groupBy(allServices, (({ labels }) => labels.id));
+      delete allServices.undefined;
+      installedIds.forEach((id) => delete allServices[id])
+      const latestVersions = Object.values(allServices).map((versions) =>
+        versions.reduce((max, current) =>
+          semver.compare(current.labels.version, max.labels.version) > 0
+            ? current
+            : max
+        ).labels
+      );
+      return latestVersions;
+    },
   },
   methods: {
     setConfigDate() {

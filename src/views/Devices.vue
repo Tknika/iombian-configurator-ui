@@ -29,6 +29,7 @@ export default {
   }),
   created() {
     this.$store.dispatch("user/bindDevicesRef");
+    this.$store.dispatch("marketplaceServices/bindMarketplaceServicesRef");
   },
   computed: {
     devices() {
