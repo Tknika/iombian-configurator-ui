@@ -8,13 +8,13 @@
           </div>
         </v-card-title>
       </v-col>
-      <v-spacer></v-spacer>
+      <v-spacer />
       <v-card-actions v-if="installed">
-        <v-btn class="mr-8" color="error" @click="uninstallService()">Uninstall</v-btn>
+        <v-btn class="mr-8" color="error" outlined @click="uninstallService()">Uninstall</v-btn>
       </v-card-actions>
       <v-card-actions v-else>
-        <v-dialog v-model="showDialog">
-          <InstallationDialog :envVars="envVars" :serviceId="service.id" :serviceVersion="service.version" />
+        <v-dialog v-model="showDialog" v-if="showDialog" >
+          <InstallationDialog :envVars="envVars" :formValues="formValues" :installCallback="installServiceCallback" />
         </v-dialog>
         <v-btn class="mr-8" color="primary" @click="showDialog = true">Install</v-btn>
       </v-card-actions>
@@ -33,6 +33,7 @@ export default {
   data() {
     return {
       showDialog: false,
+      formValues: {},
     }
   },
   props: {
@@ -62,6 +63,14 @@ export default {
   methods: {
     uninstallService() {
       this.$store.dispatch("deviceServices/uninstallService", this.service.id)
+    },
+    installServiceCallback() {
+      this.$store.dispatch("deviceServices/installService", {
+        id: this.service.id,
+        version: this.service.version,
+        envs: this.formValues
+      })
+      this.showDialog = false;
     }
   }
 }

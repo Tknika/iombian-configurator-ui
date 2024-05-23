@@ -6,7 +6,7 @@
     <v-card-subtitle>
       It is recommended to maintain the default values
     </v-card-subtitle>
-    <v-form v-model="form" class="pa-4" lazy-validation>
+    <v-form v-model="form" class="pa-4" lazy-validation >
       <v-container>
         <v-row v-for="(env, envName, index) in envVars" :key="index">
           <v-col>
@@ -21,7 +21,7 @@
         </v-row>
         <v-row>
           <v-spacer></v-spacer>
-          <v-btn type="button" color="primary" class="mr-4" @click="installService()">Install</v-btn>
+          <v-btn type="button" color="primary" class="mr-4" @click="installCallback()">Install</v-btn>
         </v-row>
       </v-container>
     </v-form>
@@ -33,27 +33,18 @@ export default {
   name: "InstallationDialog",
   props: {
     envVars: {},
-    serviceId: String,
-    serviceVersion: String,
+    installCallback: Function,
+    formValues: Object,
   },
   data() {
     return {
       form: null,
-      formValues: {},
     }
   },
   created() {
     Object.keys(this.envVars).forEach((envName) => { this.formValues[envName] = this.envVars[envName].default })
   },
   methods: {
-    installService() {
-      console.log(this.formValues);
-      this.$store.dispatch("deviceServices/installService", {
-        id: this.serviceId,
-        version: this.serviceVersion,
-        envs: this.formValues
-      })
-    },
     rules(value, type) {
       const ruleType = type.split(":")[0]
       switch (ruleType) {
