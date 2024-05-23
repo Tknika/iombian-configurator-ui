@@ -63,6 +63,19 @@ const actions = {
 			.doc(id)
 			.delete();
 	}),
+	saveEnvVars: firestoreAction((context, { id, version, envVars }) => {
+		const userId = context.rootState.user.id;
+		db.collection("users")
+			.doc(userId)
+			.collection("devices")
+			.doc(context.state.id)
+			.collection("installed_services")
+			.doc(id)
+			.set({
+				version: version,
+				env: envVars,
+			});
+	}),
 };
 
 export default {

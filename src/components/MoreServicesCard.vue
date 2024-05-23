@@ -9,7 +9,7 @@
           <v-col cols="12">
             <ul style="list-style-type: none;">
               <li v-for="(service, index) in services" :key="index">
-                <ServiceCard :service="service"></ServiceCard>
+                <ServiceCard :service="service" />
               </li>
             </ul>
           </v-col>
@@ -32,10 +32,5 @@ export default {
       type: []
     }
   },
-  created() {
-    // console.log(this.services)
-  },
-  methods: {
-  }
 }
 </script>

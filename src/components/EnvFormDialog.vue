@@ -6,7 +6,7 @@
     <v-card-subtitle>
       It is recommended to maintain the default values
     </v-card-subtitle>
-    <v-form v-model="form" class="pa-4" lazy-validation >
+    <v-form v-model="form" class="pa-4" lazy-validation>
       <v-container>
         <v-row v-for="(env, envName, index) in envVars" :key="index">
           <v-col>
@@ -21,7 +21,7 @@
         </v-row>
         <v-row>
           <v-spacer></v-spacer>
-          <v-btn type="button" color="primary" class="mr-4" @click="installCallback()">Install</v-btn>
+          <slot></slot>
         </v-row>
       </v-container>
     </v-form>
@@ -33,16 +33,12 @@ export default {
   name: "InstallationDialog",
   props: {
     envVars: {},
-    installCallback: Function,
     formValues: Object,
   },
   data() {
     return {
       form: null,
     }
-  },
-  created() {
-    Object.keys(this.envVars).forEach((envName) => { this.formValues[envName] = this.envVars[envName].default })
   },
   methods: {
     rules(value, type) {

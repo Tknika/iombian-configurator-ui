@@ -8,7 +8,7 @@
         <v-col cols="12">
           <ul style="list-style-type: none;">
             <li v-for="(service, index) in services" :key="index">
-              <ServiceCard :service="service" :installed="true"></ServiceCard>
+              <InstalledServiceCard :service="service" :installed="true" />
             </li>
           </ul>
         </v-col>
@@ -18,12 +18,12 @@
 </template>
 
 <script>
-import ServiceCard from "./ServiceCard.vue"
+import InstalledServiceCard from "./InstalledServiceCard.vue";
 
 export default {
   name: "InstalledServicesCard",
   components: {
-    ServiceCard
+    InstalledServiceCard
   },
   props: {
     services: {
