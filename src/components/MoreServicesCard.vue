@@ -8,7 +8,7 @@
         <v-row>
           <v-col cols="12">
             <ul style="list-style-type: none;">
-              <li v-for="(service, index) in services" :key="index">
+              <li v-for="service in services" :key="service.id">
                 <ServiceCard :service="service" />
               </li>
             </ul>
@@ -28,9 +28,7 @@ export default {
     ServiceCard
   },
   props: {
-    services: {
-      type: []
-    }
+    services: [],
   },
 }
 </script>

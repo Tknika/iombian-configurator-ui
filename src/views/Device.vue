@@ -70,7 +70,7 @@ import MoreServicesCard from "../components/MoreServicesCard.vue"
 import semver from "semver"
 
 export default {
-  name: "ParametersDialog",
+  name: "DevicView",
   components: {
     SystemCard,
     UserCard,
@@ -110,7 +110,7 @@ export default {
     },
     notInstalledServices() {
       let allServices = this.$store.state.marketplaceServices.services
-      const installedIds = this.$store.state.deviceServices.services.map(({id}) => id);
+      const installedIds = this.installedServices.map(({id}) => id);
       allServices = Object.groupBy(allServices, (({ labels }) => labels.id));
       delete allServices.undefined;
       installedIds.forEach((id) => delete allServices[id])

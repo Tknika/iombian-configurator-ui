@@ -51,7 +51,7 @@ const actions = {
 			.doc(context.state.id)
 			.collection("installed_services")
 			.doc(id)
-			.set({ version, env: envs });
+			.set({ version, envs });
 	}),
 	uninstallService: firestoreAction((context, id) => {
 		const userId = context.rootState.user.id;
@@ -63,7 +63,7 @@ const actions = {
 			.doc(id)
 			.delete();
 	}),
-	saveEnvVars: firestoreAction((context, { id, version, envVars }) => {
+	saveEnvs: firestoreAction((context, { id, version, envs }) => {
 		const userId = context.rootState.user.id;
 		db.collection("users")
 			.doc(userId)
@@ -71,10 +71,7 @@ const actions = {
 			.doc(context.state.id)
 			.collection("installed_services")
 			.doc(id)
-			.set({
-				version: version,
-				env: envVars,
-			});
+			.set({ version, envs });
 	}),
 };
 

@@ -12,7 +12,7 @@
       <v-card-actions>
         <v-btn class="mr-8" color="primary" @click="showDialog = true">Install</v-btn>
         <v-dialog v-model="showDialog" v-if="showDialog">
-          <EnvFormDialog :envVars="envVars" :formValues="formValues">
+          <EnvFormDialog :envs="envs" :formValues="formValues">
             <v-btn type="button" color="secondary" plain class="mr-4" @click="showDialog = false">Cancel</v-btn>
             <v-btn type="button" color="primary" class="mr-4" @click="installService()">Install</v-btn>
           </EnvFormDialog>
@@ -33,7 +33,7 @@ export default {
   data() {
     return {
       showDialog: false,
-      envVars: {},
+      envs: {},
       formValues: {},
     }
   },
@@ -41,33 +41,33 @@ export default {
     service: Object,
   },
   created() {
-    this.envVars = this.getEnvVars()
-    this.formValues = this.getDefaultEnvVars()
+    this.envs = this.getEnvs()
+    this.formValues = this.getDefaultEnvs()
   },
   methods: {
-    getEnvVars() {
-      let envVars = {}
+    getEnvs() {
+      let envs = {}
       Object.values(this.service).forEach(
         (value) => {
           if (typeof value === "object" && "envs" in value) {
-            envVars = { ...envVars, ...value.envs }
+            envs = { ...envs, ...value.envs }
           }
         }
       );
-      return envVars
+      return envs
     },
-    getDefaultEnvVars() {
-      let envVars = {};
-      Object.keys(this.envVars).forEach((envName) => {
-        envVars[envName] = this.envVars[envName].default
+    getDefaultEnvs() {
+      let envs = {};
+      Object.keys(this.envs).forEach((envName) => {
+        envs[envName] = this.envs[envName].default
       })
-      return envVars;
+      return envs;
     },
     installService() {
       this.$store.dispatch("deviceServices/installService", {
         id: this.service.id,
         version: this.service.version,
-        envs: this.formValues
+        envs: this.formValues,
       })
       this.showDialog = false;
     },

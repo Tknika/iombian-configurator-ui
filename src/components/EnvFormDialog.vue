@@ -8,7 +8,7 @@
     </v-card-subtitle>
     <v-form v-model="form" class="pa-4" lazy-validation>
       <v-container>
-        <v-row v-for="(env, envName, index) in envVars" :key="index">
+        <v-row v-for="(env, envName, index) in envs" :key="index">
           <v-col>
             <v-text-field v-if="env.type.split(':')[0] == 'integer'" type="number" :label="env.name"
               :hint="env.description" persistent-hint v-model="formValues[envName]"
@@ -32,7 +32,7 @@
 export default {
   name: "InstallationDialog",
   props: {
-    envVars: {},
+    envs: {},
     formValues: Object,
   },
   data() {

@@ -7,7 +7,7 @@
       <v-row>
         <v-col cols="12">
           <ul style="list-style-type: none;">
-            <li v-for="(service, index) in services" :key="index">
+            <li v-for="service in services" :key="service.id">
               <InstalledServiceCard :service="service" :installed="true" />
             </li>
           </ul>

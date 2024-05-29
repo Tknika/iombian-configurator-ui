@@ -12,9 +12,9 @@
       <v-card-actions>
         <v-btn color="secondary" plain @click="showDialog = true">Edit</v-btn>
         <v-dialog v-model="showDialog" v-if="showDialog">
-          <EnvFormDialog :envVars="envVars" :formValues="formValues">
+          <EnvFormDialog :envs="envs" :formValues="formValues">
             <v-btn type="button" color="secondary" plain class="mr-4" @click="showDialog = false">Cancel</v-btn>
-            <v-btn type="button" color="primary" class="mr-4" @click="setEnvVars()">Save</v-btn>
+            <v-btn type="button" color="primary" class="mr-4" @click="setEnvs()">Save</v-btn>
           </EnvFormDialog>
         </v-dialog>
         <v-btn class="mr-8" color="error" outlined @click="uninstallService()">Uninstall</v-btn>
@@ -35,41 +35,41 @@ export default {
     return {
       showDialog: false,
       formValues: {},
-      envVars: {},
+      envs: {},
     }
   },
   props: {
     service: Object,
   },
   created() {
-    this.envVars = this.getEnvVars();
-    this.formValues = this.getInstalledEnvVars();
+    this.envs = this.getEnvs();
+    this.formValues = this.getInstalledEnvs();
   },
   methods: {
-    getEnvVars() {
-      let envVars = {}
+    getEnvs() {
+      let envs = {}
       Object.values(this.service).forEach(
         (value) => {
           if (typeof value === "object" && "envs" in value) {
-            envVars = { ...envVars, ...value.envs }
+            envs = { ...envs, ...value.envs }
           }
         }
       );
-      return envVars
+      return envs
     },
-    getInstalledEnvVars() {
-      let installedEnvVars = {};
-      Object.keys(this.envVars).forEach((envName) => {
-        installedEnvVars[envName] = this.$store.state.deviceServices.services.find(
-          (service) => service.id == this.service.id).env[envName]
+    getInstalledEnvs() {
+      let installedEnvs = {};
+      Object.keys(this.envs).forEach((envName) => {
+        installedEnvs[envName] = this.$store.state.deviceServices.services.find(
+          (service) => service.id == this.service.id).envs[envName]
       })
-      return installedEnvVars;
+      return installedEnvs;
     },
-    setEnvVars() {
-      this.$store.dispatch("deviceServices/saveEnvVars", {
+    setEnvs() {
+      this.$store.dispatch("deviceServices/saveEnvs", {
         id: this.service.id,
         version: this.service.version,
-        envVars: this.formValues,
+        envs: this.formValues,
       });
       this.showDialog = false;
     },
