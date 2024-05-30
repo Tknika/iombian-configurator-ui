@@ -90,6 +90,7 @@ export default {
     snackbarColor: "success",
   }),
   created() {
+    this.$store.dispatch("marketplaceServices/bindMarketplaceServicesRef");
     this.deviceId = this.$route.params.id;
     this.$store.dispatch("deviceServices/setDeviceId", this.deviceId)
     this.$store.dispatch("deviceServices/bindFieldsRef");
