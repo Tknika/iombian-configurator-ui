@@ -17,6 +17,7 @@ const mutations = {
 };
 
 const actions = {
+	/** Set the id of the device in the store */
 	setDeviceId(context, deviceId) {
 		context.commit("SET_DEVICE_ID", deviceId);
 	},

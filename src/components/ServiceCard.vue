@@ -39,9 +39,10 @@
       <v-card-actions>
         <v-btn class="mr-8" color="primary" @click="showDialog = true">Install</v-btn>
         <v-dialog v-model="showDialog" v-if="showDialog">
-          <EnvFormDialog :envs="envs" :formValues="formValues">
+          <EnvFormDialog :envs="envs" :initialValues="initialValues" @isValidForm="setInstallEnabled"
+            @formValues="setFormValues" :serviceName="service?.name">
             <v-btn type="button" color="secondary" plain class="mr-4" @click="showDialog = false">Cancel</v-btn>
-            <v-btn type="button" color="primary" class="mr-4" @click="installService()">Install</v-btn>
+            <v-btn type="button" color="primary" :disabled="disableInstall" class="mr-4" @click="installService()">Install</v-btn>
           </EnvFormDialog>
         </v-dialog>
       </v-card-actions>
@@ -62,6 +63,7 @@ export default {
       showDialog: false,
       envs: {},
       formValues: {},
+      disableInstall: false,
     }
   },
   props: {
@@ -69,7 +71,12 @@ export default {
   },
   created() {
     this.envs = this.getEnvs()
-    this.formValues = this.getDefaultEnvs()
+    console.log(this.envs)
+  },
+  computed: {
+    initialValues() {
+      return this.getDefaultEnvs();
+    }
   },
   methods: {
     getEnvs() {
@@ -98,6 +105,12 @@ export default {
       })
       this.showDialog = false;
     },
+    setInstallEnabled(validForm) {
+      this.disableInstall = !validForm;
+    },
+    setFormValues(formValues) {
+      this.formValues = formValues;
+    }
   }
 }
 </script>

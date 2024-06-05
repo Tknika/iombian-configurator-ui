@@ -21,7 +21,8 @@
 
             <v-tooltip top>
               <template v-slot:activator="{ on }">
-                <v-btn v-show="updatableService" color="primary" class="ml-4" v-on="on" @click="showUpdateDialog = true">
+                <v-btn v-show="updatableService" color="primary" class="ml-4" v-on="on"
+                  @click="showUpdateDialog = true">
                   Update
                 </v-btn>
               </template>
@@ -29,9 +30,10 @@
                 Update to {{ updatableService?.version }} version
               </span>
               <v-dialog v-model="showUpdateDialog" v-if="showUpdateDialog">
-                <EnvFormDialog :envs="updatableEnvs" :formValues="updateFormValues">
-                  <v-btn type="button" color="secondary" plain class="mr-4" @click="showDialog = false">Cancel</v-btn>
-                  <v-btn type="button" color="primary" class="mr-4" @click="updateService()">Update</v-btn>
+                <EnvFormDialog :envs="updatableEnvs" :initialValues="initialUpdatableValues"
+                  @isValidForm="setUpdateEnabled" @formValues="setUpdateFormValues" :serviceName="service?.name">
+                  <v-btn color="secondary" plain class="mr-4" @click="showDialog = false">Cancel</v-btn>
+                  <v-btn color="primary" class="mr-4" :disabled="disableUpdate" @click="updateService()">Update</v-btn>
                 </EnvFormDialog>
               </v-dialog>
             </v-tooltip>
@@ -60,9 +62,10 @@
         <v-card-actions>
           <v-btn color="secondary" plain @click="showDialog = true">Edit</v-btn>
           <v-dialog v-model="showDialog" v-if="showDialog">
-            <EnvFormDialog :envs="envs" :formValues="formValues">
+            <EnvFormDialog :envs="envs" :initialValues="initialValues" @isValidForm="setSaveEnabled"
+              @formValues="setFormValues" :serviceName="service?.name">
               <v-btn type="button" color="secondary" plain class="mr-4" @click="showDialog = false">Cancel</v-btn>
-              <v-btn type="button" color="primary" class="mr-4" @click="setEnvs()">Save</v-btn>
+              <v-btn type="button" color="primary" :disabled="disableSave" class="mr-4" @click="setEnvs()">Save</v-btn>
             </EnvFormDialog>
           </v-dialog>
           <v-btn class="mr-8" color="error" outlined @click="uninstallService()">Uninstall</v-btn>
@@ -85,9 +88,13 @@ export default {
       showDialog: false,
       envs: {},
       formValues: {},
+      validForm: false,
+      disableSave: false,
       showUpdateDialog: false,
       updatableEnvs: {},
       updateFormValues: {},
+      validUpdateForm: false,
+      disableUpdate: false,
     }
   },
   props: {
@@ -95,15 +102,19 @@ export default {
   },
   created() {
     this.envs = this.getEnvs(this.service);
-    this.formValues = this.getInstalledEnvValues();
     if (this.updatableService) {
       this.updatableEnvs = this.getEnvs(this.updatableService);
-      this.updateFormValues = this.getUpdatableDefaultEnvs();
     }
   },
   computed: {
     updatableService() {
       return this.getUpdatableService()
+    },
+    initialValues() {
+      return this.getInstalledEnvValues()
+    },
+    initialUpdatableValues() {
+      return this.getUpdatableDefaultEnvs();
     },
   },
   methods: {
@@ -127,10 +138,14 @@ export default {
       return installedEnvValues;
     },
     setEnvs() {
+      const formValuseStr = {};
+      Object.keys(this.formValues).forEach((key) => {
+        formValuseStr[key] = this.formValues[key].toString();
+      })
       this.$store.dispatch("deviceServices/saveEnvs", {
         id: this.service.id,
         version: this.service.version,
-        envs: this.formValues,
+        envs: formValuseStr,
       });
       this.showDialog = false;
     },
@@ -164,7 +179,19 @@ export default {
         })
         this.showDialog = false;
       })
-    }
+    },
+    setSaveEnabled(validForm) {
+      this.disableSave = !validForm
+    },
+    setUpdateEnabled(validForm) {
+      this.disableUpdate = !validForm
+    },
+    setFormValues(formValues) {
+      this.formValues = formValues;
+    },
+    setUpdateFormValues(formValues) {
+      this.updateFormValues = formValues;
+    },
   },
 }
 </script>

@@ -1,22 +1,29 @@
 <template>
   <v-card>
     <v-card-title>
-      Set service variables
+      Set {{ serviceName }} variables
     </v-card-title>
-    <v-card-subtitle>
+    <v-card-subtitle class="pb-0">
       It is recommended to maintain the default values
     </v-card-subtitle>
-    <v-form v-model="form" class="pa-4" lazy-validation>
+    <v-form v-model="isValidForm" class="pa-4" lazy-validation>
       <v-container>
         <v-row v-for="(env, envName, index) in envs" :key="index">
           <v-col>
-            <v-text-field v-if="env.type.split(':')[0] == 'integer'" type="number" :label="env.name"
-              :hint="env.description" persistent-hint v-model="formValues[envName]"
-              :rules="rules(formValues[envName], env.type)" required />
-            <v-text-field v-else-if="env.type.split(':')[0] == 'string'" :label="env.name" :hint="env.description"
-              persistent-hint v-model="formValues[envName]" required />
-            <v-select v-else-if="env.type.split(':')[0] == 'enum'" :label="env.name" :hint="env.description"
-              persistent-hint :items="env.type.split(':')[1].split(',')" v-model="formValues[envName]" required />
+            <IntegerInput v-if="env.type.split(':')[0] == 'integer'" v-model="formValues[envName]" :name="env.name"
+              :description="env.description" :type="env.type" :default="initialValues[envName]" integer />
+            <IntegerInput v-else-if="env.type.split(':')[0] == 'float'" v-model="formValues[envName]" :name="env.name"
+              :description="env.description" :type="env.type" :default="initialValues[envName]" />
+            <TextInput v-else-if="env.type.split(':')[0] == 'string' && env.type.split(':')[1][0] == '0'"
+              v-model="formValues[envName]" :name="env.name" :description="env.description" :type="env.type"
+              :default="initialValues[envName]" />
+            <PasswordInput v-else-if="env.type.split(':')[0] == 'string' && env.type.split(':')[1][0] == '1'"
+              v-model="formValues[envName]" :name="env.name" :description="env.description" :type="env.type"
+              :default="initialValues[envName]" />
+            <SelectInput v-else-if="env.type.split(':')[0] == 'enum'" v-model="formValues[envName]" :name="env.name"
+              :description="env.description" :type="env.type" :default="initialValues[envName]" />
+            <BooleanInput v-else-if="env.type == 'boolean'" v-model="formValues[envName]" :name="env.name"
+              :description="env.description" :default="initialValues[envName]" />
           </v-col>
         </v-row>
         <v-row>
@@ -29,51 +36,43 @@
 </template>
 
 <script>
+import IntegerInput from "./EnvFromInputs/IntegerInput.vue";
+import TextInput from "./EnvFromInputs/TextInput.vue";
+import PasswordInput from "./EnvFromInputs/PasswordInput.vue";
+import BooleanInput from "./EnvFromInputs/BooleanInput.vue";
+import SelectInput from "./EnvFromInputs/SelectInput.vue";
+
 export default {
-  name: "InstallationDialog",
-  props: {
-    envs: {},
-    formValues: Object,
+  components: {
+    IntegerInput,
+    TextInput,
+    PasswordInput,
+    BooleanInput,
+    SelectInput,
   },
+  name: "EnvFormDialog",
   data() {
     return {
-      form: null,
+      formValues: {},
+      isValidForm: false,
     }
   },
-  methods: {
-    rules(value, type) {
-      const ruleType = type.split(":")[0]
-      switch (ruleType) {
-        case "integer":
-          return this.integerRule(value, type)
-        case "string":
-          return []
-        // return this.stringRule(value, type)
-        case "enum":
-          return []
-        // return this.enumRule(value, type)
-      }
+  props: {
+    envs: {},
+    initialValues: Object,
+    serviceName: String,
+  },
+  created() {
+    console.log(this.initialValues)
+    this.formValues = { ...this.initialValues };
+  },
+  watch: {
+    isValidForm() {
+      this.$emit("isValidForm", this.isValidForm);
     },
-    integerRule(value, type) {
-      const splittedType = type.split(":")
-      if (splittedType.lenth === 1) {
-        return []
-      } else {
-        const [min, max] = splittedType[1].split(";").map(str => parseInt(str))
-        return [
-          value > min || `Value must be bigger that ${min}`,
-          value < max || `Value must be smaller that ${max}`
-        ]
-      }
-    },
-    // stringRule(value, type) {
-    //   const splittedType = type.split(":")
-    //   if (splittedType.lenth === 1) {
-    //     return []
-    //   } else {
-    //     const regexPattern = splitted
-    //   }
-    // }
+    formValues() {
+      this.$emit("formValues", this.formValues);
+    }
   }
 }
 </script>
