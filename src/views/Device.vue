@@ -98,17 +98,20 @@ export default {
     this.setConfigDate();
   },
   computed: {
+    /** Parameters of the device in firestore */
     parameters() {
       const params = this.$store.state.deviceServices.fields.parameters;
       const firstDate = Object.keys(params)[0]
       return params[firstDate];
     },
+    /** Installed services of the device */
     installedServices() {
       return this.$store.state.deviceServices.services.map(({ id, version }) => (
         this.$store.state.marketplaceServices.services.find(
           (service) => (service.labels.version == version && service.labels.id == id))
       )).map(({ labels }) => labels)
     },
+    /** The rest of the services that are not installed */
     notInstalledServices() {
       let allServices = this.$store.state.marketplaceServices.services
       const installedIds = this.installedServices.map(({id}) => id);

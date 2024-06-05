@@ -30,9 +30,5 @@ export default {
       type: []
     }
   },
-  created() {
-  },
-  methods: {
-  }
 }
 </script>
