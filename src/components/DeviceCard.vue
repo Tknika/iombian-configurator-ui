@@ -15,6 +15,13 @@
               :localConnectionStatus="localConnectionStatus"
             />
             <v-spacer></v-spacer>
+            <v-btn v-if="!$vuetify.breakpoint.xs" small text outlined :to="deviceId" class="mr-2">
+              Settings<v-icon right>mdi-wrench</v-icon>
+            </v-btn>
+            <v-btn v-if="$vuetify.breakpoint.xs" small text outlined :to="deviceId" class="mr-2">
+              <v-icon>mdi-wrench</v-icon>
+            </v-btn>
+
             <v-btn
               v-if="!$vuetify.breakpoint.xs"
               small
@@ -86,85 +93,85 @@
                 </v-list>
               </v-expansion-panel-content>
             </v-expansion-panel>
-            <v-expansion-panel :readonly="!numConfigurations">
-              <v-expansion-panel-header
-                class="px-4"
-                :hide-actions="!numConfigurations"
-              >
-                <span>
-                  <span v-if="numConfigurations"
-                    >Saved configurations: {{ numConfigurations }}</span
-                  >
-                  <v-btn
-                    v-if="!numConfigurations"
-                    small
-                    @click.native.stop="
-                      $refs.parametersDialog.open(
-                        deviceId,
-                        null,
-                        numConfigurations > 0
-                      )
-                    "
-                  >
-                    <v-icon left>mdi-plus</v-icon>
-                    New configuration
-                  </v-btn>
-                  <v-btn
-                    v-if="numConfigurations"
-                    small
-                    class="ml-2"
-                    @click.native.stop="
-                      $refs.parametersDialog.open(
-                        deviceId,
-                        lastConfiguration,
-                        numConfigurations > 0
-                      )
-                    "
-                  >
-                    <v-icon left>mdi-pencil</v-icon>
-                    Latest
-                  </v-btn>
-                </span>
-              </v-expansion-panel-header>
-              <v-expansion-panel-content>
-                <v-subheader v-if="numConfigurations">History</v-subheader>
-                <v-list dense>
-                  <v-fade-transition group>
-                    <template
-                      v-for="(
-                        config, configDate, index
-                      ) in sortedConfigurations"
-                    >
-                      <v-list-item :key="configDate">
-                        <v-list-item-content>
-                          <v-list-item-title
-                            v-text="configDate.split('T').join(' ')"
-                          ></v-list-item-title>
-                        </v-list-item-content>
-                        <v-list-item-action>
-                          <v-icon
-                            @click="
-                              $refs.parametersDialog.open(
-                                deviceId,
-                                config,
-                                numConfigurations > 0
-                              )
-                            "
-                            >mdi-pencil</v-icon
-                          >
-                        </v-list-item-action>
-                        <v-list-item-action>
-                          <v-icon @click="deleteDeviceConfiguration(config)"
-                            >mdi-delete</v-icon
-                          >
-                        </v-list-item-action>
-                      </v-list-item>
-                      <v-divider :key="index"></v-divider>
-                    </template>
-                  </v-fade-transition>
-                </v-list>
-              </v-expansion-panel-content>
-            </v-expansion-panel>
+            <!-- <v-expansion-panel :readonly="!numConfigurations"> -->
+            <!--   <v-expansion-panel-header -->
+            <!--     class="px-4" -->
+            <!--     :hide-actions="!numConfigurations" -->
+            <!--   > -->
+            <!--     <span> -->
+            <!--       <span v-if="numConfigurations" -->
+            <!--         >Saved configurations: {{ numConfigurations }}</span -->
+            <!--       > -->
+            <!--       <v-btn -->
+            <!--         v-if="!numConfigurations" -->
+            <!--         small -->
+            <!--         @click.native.stop=" -->
+            <!--           $refs.parametersDialog.open( -->
+            <!--             deviceId, -->
+            <!--             null, -->
+            <!--             numConfigurations > 0 -->
+            <!--           ) -->
+            <!--         " -->
+            <!--       > -->
+            <!--         <v-icon left>mdi-plus</v-icon> -->
+            <!--         New configuration -->
+            <!--       </v-btn> -->
+            <!--       <v-btn -->
+            <!--         v-if="numConfigurations" -->
+            <!--         small -->
+            <!--         class="ml-2" -->
+            <!--         @click.native.stop=" -->
+            <!--           $refs.parametersDialog.open( -->
+            <!--             deviceId, -->
+            <!--             lastConfiguration, -->
+            <!--             numConfigurations > 0 -->
+            <!--           ) -->
+            <!--         " -->
+            <!--       > -->
+            <!--         <v-icon left>mdi-pencil</v-icon> -->
+            <!--         Latest -->
+            <!--       </v-btn> -->
+            <!--     </span> -->
+            <!--   </v-expansion-panel-header> -->
+            <!--   <v-expansion-panel-content> -->
+            <!--     <v-subheader v-if="numConfigurations">History</v-subheader> -->
+            <!--     <v-list dense> -->
+            <!--       <v-fade-transition group> -->
+            <!--         <template -->
+            <!--           v-for="( -->
+            <!--             config, configDate, index -->
+            <!--           ) in sortedConfigurations" -->
+            <!--         > -->
+            <!--           <v-list-item :key="configDate"> -->
+            <!--             <v-list-item-content> -->
+            <!--               <v-list-item-title -->
+            <!--                 v-text="configDate.split('T').join(' ')" -->
+            <!--               ></v-list-item-title> -->
+            <!--             </v-list-item-content> -->
+            <!--             <v-list-item-action> -->
+            <!--               <v-icon -->
+            <!--                 @click=" -->
+            <!--                   $refs.parametersDialog.open( -->
+            <!--                     deviceId, -->
+            <!--                     config, -->
+            <!--                     numConfigurations > 0 -->
+            <!--                   ) -->
+            <!--                 " -->
+            <!--                 >mdi-pencil</v-icon -->
+            <!--               > -->
+            <!--             </v-list-item-action> -->
+            <!--             <v-list-item-action> -->
+            <!--               <v-icon @click="deleteDeviceConfiguration(config)" -->
+            <!--                 >mdi-delete</v-icon -->
+            <!--               > -->
+            <!--             </v-list-item-action> -->
+            <!--           </v-list-item> -->
+            <!--           <v-divider :key="index"></v-divider> -->
+            <!--         </template> -->
+            <!--       </v-fade-transition> -->
+            <!--     </v-list> -->
+            <!--   </v-expansion-panel-content> -->
+            <!-- </v-expansion-panel> -->
           </v-expansion-panels>
         </v-card>
       </v-col>

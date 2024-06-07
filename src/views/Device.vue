@@ -33,13 +33,13 @@
       <v-form>
         <v-row>
           <v-col cols="12">
-            <SystemCard :deviceId="deviceId" :sysParams="parameters.system" />
+            <SystemCard v-if="'system' in parameters" :deviceId="deviceId" :sysParams="parameters.system" />
           </v-col>
           <v-col cols="12">
-            <UserCard :userParams="parameters.user" />
+            <UserCard v-if="'user' in parameters" :userParams="parameters.user" />
           </v-col>
           <v-col cols="12">
-            <NetworkCard :networkParams="parameters.networking" />
+            <NetworkCard v-if="'networking' in parameters" :networkParams="parameters.networking" />
           </v-col>
           <v-col cols="12">
             <InstalledServicesCard :services="installedServices" />
@@ -100,7 +100,8 @@ export default {
   computed: {
     /** Parameters of the device in firestore */
     parameters() {
-      const params = this.$store.state.deviceServices.fields.parameters;
+      const params = this.$store.state.deviceServices.fields?.parameters;
+      if (!params) return {};
       const firstDate = Object.keys(params)[0]
       return params[firstDate];
     },
