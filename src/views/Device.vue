@@ -7,25 +7,25 @@
       </v-progress-circular>
     </v-overlay>
 
-    <v-container>
-      <div style="position: sticky; top: 5rem; z-index: 1; width: 100%; display: flex; justify-content: end;">
-        <div style="display: inline;">
-          <v-toolbar color="grey lighten-4" floating rounded class="ma-4 mt-0 right-0">
+    <v-container style="position: relative">
+      <div style="position: absolute; top: 0rem; right: 0rem;">
+        <div style="position: fixed; z-index: 1; transform: translate(-100%, 0%);">
+          <v-toolbar color="grey lighten-4" floating rounded class="ma-6 right-0">
             <v-toolbar-items>
               <v-btn v-if="serialAvailable && !$vuetify.breakpoint.xs" text @click="serialSync">Sync<v-icon
-                right>mdi-usb-port</v-icon></v-btn>
+                  right>mdi-usb-port</v-icon></v-btn>
               <v-btn v-if="serialAvailable && $vuetify.breakpoint.xs" icon
                 @click="serialSync"><v-icon>mdi-usb-port</v-icon></v-btn>
               <v-btn v-if="bluetoothAvailable && !$vuetify.breakpoint.xs" text @click="bluetoothSync">Sync<v-icon
-                right>mdi-bluetooth</v-icon></v-btn>
+                  right>mdi-bluetooth</v-icon></v-btn>
               <v-btn v-if="bluetoothAvailable && $vuetify.breakpoint.xs" icon
                 @click="bluetoothSync"><v-icon>mdi-bluetooth</v-icon></v-btn>
               <v-btn v-if="pushEnabled && !$vuetify.breakpoint.xs" text @click="push">Push<v-icon
-                right>mdi-cloud-upload</v-icon></v-btn>
+                  right>mdi-cloud-upload</v-icon></v-btn>
               <v-btn v-if="pushEnabled && $vuetify.breakpoint.xs" icon
                 @click="push"><v-icon>mdi-cloud-upload</v-icon></v-btn>
               <v-btn v-if="!$vuetify.breakpoint.xs" text @click="download">Download<v-icon
-                right>mdi-download</v-icon></v-btn>
+                  right>mdi-download</v-icon></v-btn>
               <v-btn v-if="$vuetify.breakpoint.xs" icon @click="download"><v-icon>mdi-download</v-icon></v-btn>
             </v-toolbar-items>
           </v-toolbar>
