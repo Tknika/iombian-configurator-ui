@@ -9,7 +9,7 @@
 
     <v-container style="position: relative">
       <div style="position: absolute; top: 0rem; right: 0rem;">
-        <div style="position: fixed; z-index: 1; transform: translate(-100%, 0%);">
+        <div style="position: fixed; z-index: 5; transform: translate(-100%, 0%);">
           <v-toolbar color="grey lighten-4" floating rounded class="ma-6 right-0">
             <v-toolbar-items>
               <v-btn v-if="serialAvailable && !$vuetify.breakpoint.xs" text @click="serialSync">Sync<v-icon
