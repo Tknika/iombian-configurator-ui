@@ -6,28 +6,32 @@
         <strong>{{ Math.round(bluetoothSynchingValue) }}%</strong>
       </v-progress-circular>
     </v-overlay>
-    <v-toolbar dark color="#233167">
-      <v-btn icon dark @click="show = false"> <v-icon>mdi-close</v-icon> </v-btn>
-      <v-toolbar-title>Configuration</v-toolbar-title>
-      <v-spacer></v-spacer>
-      <v-toolbar-items>
-        <v-btn v-if="serialAvailable && !$vuetify.breakpoint.xs" dark text @click="serialSync">Sync<v-icon
-            right>mdi-usb-port</v-icon></v-btn>
-        <v-btn v-if="serialAvailable && $vuetify.breakpoint.xs" icon
-          @click="serialSync"><v-icon>mdi-usb-port</v-icon></v-btn>
-        <v-btn v-if="bluetoothAvailable && !$vuetify.breakpoint.xs" dark text @click="bluetoothSync">Sync<v-icon
-            right>mdi-bluetooth</v-icon></v-btn>
-        <v-btn v-if="bluetoothAvailable && $vuetify.breakpoint.xs" icon
-          @click="bluetoothSync"><v-icon>mdi-bluetooth</v-icon></v-btn>
-        <v-btn v-if="pushEnabled && !$vuetify.breakpoint.xs" dark text @click="push">Push<v-icon
-            right>mdi-cloud-upload</v-icon></v-btn>
-        <v-btn v-if="pushEnabled && $vuetify.breakpoint.xs" icon @click="push"><v-icon>mdi-cloud-upload</v-icon></v-btn>
-        <v-btn v-if="!$vuetify.breakpoint.xs" dark text @click="download">Download<v-icon
-            right>mdi-download</v-icon></v-btn>
-        <v-btn v-if="$vuetify.breakpoint.xs" icon @click="download"><v-icon>mdi-download</v-icon></v-btn>
-      </v-toolbar-items>
-    </v-toolbar>
+
     <v-container>
+      <div style="position: sticky; top: 5rem; z-index: 1; width: 100%; display: flex; justify-content: end;">
+        <div style="display: inline;">
+          <v-toolbar color="grey lighten-4" floating rounded class="ma-4 mt-0 right-0">
+            <v-toolbar-items>
+              <v-btn v-if="serialAvailable && !$vuetify.breakpoint.xs" text @click="serialSync">Sync<v-icon
+                right>mdi-usb-port</v-icon></v-btn>
+              <v-btn v-if="serialAvailable && $vuetify.breakpoint.xs" icon
+                @click="serialSync"><v-icon>mdi-usb-port</v-icon></v-btn>
+              <v-btn v-if="bluetoothAvailable && !$vuetify.breakpoint.xs" text @click="bluetoothSync">Sync<v-icon
+                right>mdi-bluetooth</v-icon></v-btn>
+              <v-btn v-if="bluetoothAvailable && $vuetify.breakpoint.xs" icon
+                @click="bluetoothSync"><v-icon>mdi-bluetooth</v-icon></v-btn>
+              <v-btn v-if="pushEnabled && !$vuetify.breakpoint.xs" text @click="push">Push<v-icon
+                right>mdi-cloud-upload</v-icon></v-btn>
+              <v-btn v-if="pushEnabled && $vuetify.breakpoint.xs" icon
+                @click="push"><v-icon>mdi-cloud-upload</v-icon></v-btn>
+              <v-btn v-if="!$vuetify.breakpoint.xs" text @click="download">Download<v-icon
+                right>mdi-download</v-icon></v-btn>
+              <v-btn v-if="$vuetify.breakpoint.xs" icon @click="download"><v-icon>mdi-download</v-icon></v-btn>
+            </v-toolbar-items>
+          </v-toolbar>
+        </div>
+      </div>
+
       <v-form>
         <v-row>
           <v-col cols="12">
@@ -113,7 +117,7 @@ export default {
     /** The rest of the services that are not installed */
     notInstalledServices() {
       let allServices = this.$store.state.marketplaceServices.services
-      const installedIds = this.installedServices.map(({id}) => id);
+      const installedIds = this.installedServices.map(({ id }) => id);
       allServices = Object.groupBy(allServices, (({ labels }) => labels.id));
       delete allServices.undefined;
       installedIds.forEach((id) => delete allServices[id])
