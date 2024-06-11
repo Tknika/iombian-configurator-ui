@@ -1,77 +1,139 @@
 <template>
-  <v-card>
-    <v-row justify="space-between">
-      <v-col cols="6">
-        <v-card-title>
-          <v-row class="ml-4" align="center">
-            <span class="subtitle-1 font-weight-medium">
-              {{ service?.name ?? "Loading name..." }}
-            </span>
-
-            <v-tooltip top>
-              <template v-slot:activator="{ on }">
-                <div class="subtitle-1 font-weight-regular ml-2 grey--text text--darken-2" v-on="on">
-                  {{ service?.version ?? "" }}
-                </div>
-              </template>
-              <span>
-                {{ service?.changelog ?? "Loading changelog..." }}
-              </span>
-            </v-tooltip>
-
-            <v-tooltip top>
-              <template v-slot:activator="{ on }">
-                <v-btn v-show="updatableService" color="primary" class="ml-4" v-on="on"
-                  @click="showUpdateDialog = true">
-                  Update
-                </v-btn>
-              </template>
-              <span>
-                Update to {{ updatableService?.version }} version
-              </span>
-              <v-dialog v-model="showUpdateDialog" v-if="showUpdateDialog">
-                <EnvFormDialog :envs="updatableEnvs" :initialValues="initialUpdatableValues"
-                  @isValidForm="setUpdateEnabled" @formValues="setUpdateFormValues" :serviceName="service?.name">
-                  <v-btn color="secondary" plain class="mr-4" @click="showDialog = false">Cancel</v-btn>
-                  <v-btn color="primary" class="mr-4" :disabled="disableUpdate" @click="updateService()">Update</v-btn>
-                </EnvFormDialog>
-              </v-dialog>
-            </v-tooltip>
-          </v-row>
+  <v-card v-if="$vuetify.breakpoint.xs">
+    <div class="d-flex flex-column">
+      <div class="d-flex align-center">
+        <v-card-title class="subtitle-1 font-weight-medium">
+          {{ service?.name ?? "Loading name..." }}
         </v-card-title>
-
-        <v-card-subtitle>
-          <v-row class="ml-4 mt-3">
-            <span class="grey--text text--darken-2">
-              {{ service?.author ?? "" }}
-            </span>
-          </v-row>
-          <v-row v-if="service?.documentation_url" class="ml-4 mt-3">
-            <a :href="service?.documentation_url">
-              Documentation
-            </a>
-          </v-row>
-        </v-card-subtitle>
-
-        <v-card-text class="mt-3">
-          {{ service?.description ?? "Loading description..." }}
-        </v-card-text>
-
-      </v-col>
-      <v-col cols="auto">
-        <v-card-actions>
-          <v-btn color="secondary" plain @click="showDialog = true">Edit</v-btn>
-          <v-dialog v-model="showDialog" v-if="showDialog">
-            <EnvFormDialog :envs="envs" :initialValues="initialValues" @isValidForm="setSaveEnabled"
-              @formValues="setFormValues" :serviceName="service?.name">
-              <v-btn type="button" color="secondary" plain class="mr-4" @click="showDialog = false">Cancel</v-btn>
-              <v-btn type="button" color="primary" :disabled="disableSave" class="mr-4" @click="setEnvs()">Save</v-btn>
+        <v-spacer />
+        <v-tooltip top>
+          <template v-slot:activator="{ on }">
+            <v-btn v-show="updatableService" class="mr-4" small fab v-on="on" @click="showUpdateDialog = true">
+              <v-icon>mdi-update</v-icon>
+            </v-btn>
+          </template>
+          <span>
+            Update to {{ updatableService?.version }} version
+          </span>
+          <v-dialog v-model="showUpdateDialog" v-if="showUpdateDialog">
+            <EnvFormDialog :envs="updatableEnvs" :initialValues="initialUpdatableValues" @isValidForm="setUpdateEnabled"
+              @formValues="setUpdateFormValues" :serviceName="service?.name">
+              <v-btn color="secondary" plain class="mr-4" @click="showDialog = false">Cancel</v-btn>
+              <v-btn color="primary" class="mr-4" :disabled="disableUpdate" @click="updateService()">Update</v-btn>
             </EnvFormDialog>
           </v-dialog>
-          <v-btn class="mr-8" color="error" outlined @click="uninstallService()">Uninstall</v-btn>
-        </v-card-actions>
-      </v-col>
-    </v-row>
+        </v-tooltip>
+      </div>
+
+      <v-card-subtitle class="grey--text text--darken-2 px-4 pb-2 pt-0">
+        <span>{{ service?.author + " • " ?? "" }}</span>
+        <span>
+          <v-tooltip top>
+            <template v-slot:activator="{ on }">
+              <div class="d-inline" v-on="on">
+                {{ service?.version ?? "" }}
+              </div>
+            </template>
+            <span>
+              {{ service?.changelog ?? "Loading changelog..." }}
+            </span>
+          </v-tooltip>
+        </span>
+      </v-card-subtitle>
+
+      <div v-if="service?.documentation_url" class="ml-4 mt-3">
+        <a :href="service?.documentation_url">
+          Documentation
+        </a>
+      </div>
+
+      <v-card-text style="max-width: 80ch;">
+        {{ service?.description ?? "Loading description..." }}
+      </v-card-text>
+
+      <div class="d-flex justify-end gap-2 pe-4 py-4">
+        <v-btn color="secondary" plain @click="showDialog = true">
+          Edit
+          <v-icon right>mdi-pencil</v-icon>
+        </v-btn>
+        <v-dialog v-model="showDialog" v-if="showDialog">
+          <EnvFormDialog :envs="envs" :initialValues="initialValues" @isValidForm="setSaveEnabled"
+            @formValues="setFormValues" :serviceName="service?.name">
+            <v-btn type="button" plain class="mr-4" @click="showDialog = false">Cancel</v-btn>
+            <v-btn type="button" :disabled="disableSave" class="mr-4" @click="setEnvs()">Save</v-btn>
+          </EnvFormDialog>
+        </v-dialog>
+
+        <v-btn @click="uninstallService()">
+          Uninstall
+          <v-icon right>mdi-delete</v-icon>
+        </v-btn>
+      </div>
+    </div>
+  </v-card>
+
+  <v-card v-else>
+    <div class="d-flex flex-column">
+      <div class="d-flex align-center">
+        <v-card-title class="subtitle-1 font-weight-medium">
+          {{ service?.name ?? "Loading name..." }}
+        </v-card-title>
+        <v-tooltip top>
+          <template v-slot:activator="{ on }">
+            <v-btn v-show="updatableService" small fab v-on="on" @click="showUpdateDialog = true">
+              <v-icon>mdi-update</v-icon>
+            </v-btn>
+          </template>
+          <span>
+            Update to {{ updatableService?.version }} version
+          </span>
+          <v-dialog v-model="showUpdateDialog" v-if="showUpdateDialog">
+            <EnvFormDialog :envs="updatableEnvs" :initialValues="initialUpdatableValues" @isValidForm="setUpdateEnabled"
+              @formValues="setUpdateFormValues" :serviceName="service?.name">
+              <v-btn color="secondary" plain class="mr-4" @click="showDialog = false">Cancel</v-btn>
+              <v-btn color="primary" class="mr-4" :disabled="disableUpdate" @click="updateService()">Update</v-btn>
+            </EnvFormDialog>
+          </v-dialog>
+        </v-tooltip>
+        <v-spacer />
+        <v-btn color="secondary" plain @click="showDialog = true">
+          Edit
+          <v-icon right>mdi-pencil</v-icon>
+        </v-btn>
+        <v-dialog v-model="showDialog" v-if="showDialog">
+          <EnvFormDialog :envs="envs" :initialValues="initialValues" @isValidForm="setSaveEnabled"
+            @formValues="setFormValues" :serviceName="service?.name">
+            <v-btn type="button" plain class="mr-4" @click="showDialog = false">Cancel</v-btn>
+            <v-btn type="button" :disabled="disableSave" class="mr-4" @click="setEnvs()">Save</v-btn>
+          </EnvFormDialog>
+        </v-dialog>
+
+        <v-btn class="mr-4" @click="uninstallService()">
+          Uninstall
+          <v-icon right>mdi-delete</v-icon>
+        </v-btn>
+      </div>
+
+      <v-card-subtitle class="grey--text text--darken-2 px-4 pb-2 pt-0">
+        <span>{{ service?.author + " • " ?? "" }}</span>
+        <span>
+          <v-tooltip top>
+            <template v-slot:activator="{ on }">
+              <div class="d-inline" v-on="on">
+                {{ service?.version ?? "" }}
+              </div>
+            </template>
+            <span>
+              {{ service?.changelog ?? "Loading changelog..." }}
+            </span>
+          </v-tooltip>
+        </span>
+      </v-card-subtitle>
+
+      <v-card-text style="max-width: 80ch;">
+        {{ service?.description ?? "Loading description..." }}
+      </v-card-text>
+    </div>
   </v-card>
 </template>
 

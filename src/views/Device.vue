@@ -7,9 +7,7 @@
       </v-progress-circular>
     </v-overlay>
     <v-toolbar dark color="#233167">
-      <v-btn icon dark @click="show = false">
-        <v-icon>mdi-close</v-icon>
-      </v-btn>
+      <v-btn icon dark @click="show = false"> <v-icon>mdi-close</v-icon> </v-btn>
       <v-toolbar-title>Configuration</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-toolbar-items>

@@ -7,7 +7,7 @@
       <v-expansion-panel-content>
         <v-row>
           <v-col cols="12">
-            <ul style="list-style-type: none;">
+            <ul style="list-style-type: none; padding-left: 0;">
               <li v-for="service in services" :key="service.id" class="my-6">
                 <ServiceCard :service="service" />
               </li>
