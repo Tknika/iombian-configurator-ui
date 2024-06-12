@@ -82,11 +82,11 @@ export default {
   },
   data: () => ({
     deviceId: null,
-    pushEnabled: false,
-    bluetoothAvailable: false,
+    pushEnabled: true,
+    // bluetoothAvailable: false,
     bluetoothSynchingState: false,
     bluetoothSynchingValue: 0,
-    serialAvailable: false,
+    // serialAvailable: false,
     snackbarState: false,
     snackbarText: "",
     snackbarColor: "success",
@@ -130,6 +130,12 @@ export default {
       );
       return latestVersions;
     },
+    bluetoothAvailable() {
+      return "bluetooth" in navigator;
+    },
+    serialAvailable() {
+      return "serial" in navigator;
+    }
   },
   methods: {
     setConfigDate() {
@@ -138,27 +144,27 @@ export default {
       };
       Object.assign(this.parameters, config_date);
     },
-    open(deviceId, parameters, pushEnabled = false) {
-      this.show = true;
-      this.deviceId = deviceId;
-      this.pushEnabled = pushEnabled;
-      this.parameters = parameters
-        ? JSON.parse(JSON.stringify(parameters))
-        : JSON.parse(JSON.stringify(default_parameters));
-      const remote_configurator = {
-        remote_configurator: {
-          device_id: this.deviceId,
-          api_key: apiKey,
-          project_id: projectId,
-          refresh_token: this.$store.state.user.refreshToken,
-        },
-      };
-      if (this.$store.state.user.refreshToken != "") {
-        Object.assign(this.parameters, remote_configurator);
-      }
-      this.bluetoothAvailable = "bluetooth" in navigator;
-      this.serialAvailable = "serial" in navigator;
-    },
+    // open(deviceId, parameters, pushEnabled = false) {
+    //   this.show = true;
+    //   this.deviceId = deviceId;
+    //   this.pushEnabled = pushEnabled;
+    //   this.parameters = parameters
+    //     ? JSON.parse(JSON.stringify(parameters))
+    //     : JSON.parse(JSON.stringify(default_parameters));
+    //   const remote_configurator = {
+    //     remote_configurator: {
+    //       device_id: this.deviceId,
+    //       api_key: apiKey,
+    //       project_id: projectId,
+    //       refresh_token: this.$store.state.user.refreshToken,
+    //     },
+    //   };
+    //   if (this.$store.state.user.refreshToken != "") {
+    //     Object.assign(this.parameters, remote_configurator);
+    //   }
+    //   this.bluetoothAvailable = "bluetooth" in navigator;
+    //   this.serialAvailable = "serial" in navigator;
+    // },
     showSnackbar(text, color) {
       this.snackbarText = text;
       this.snackbarColor = color;
