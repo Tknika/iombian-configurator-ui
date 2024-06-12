@@ -2,7 +2,6 @@
   <v-container class="px-0">
     <v-row dense>
       <v-col cols="12">
-        <ParametersDialog ref="parametersDialog" />
         <v-card>
           <v-card-title class="headline">
             {{ deviceId }}
@@ -101,7 +100,6 @@
 </template>
 
 <script>
-import ParametersDialog from "./ParametersDialog.vue";
 import NewTunnelDialog from "./NewTunnelDialog.vue";
 import DeleteDeviceDialog from "./DeleteDeviceDialog.vue";
 import RemoteConnectionStatusIcon from "./RemoteConnectionStatusIcon.vue";
@@ -117,7 +115,6 @@ export default {
     },
   },
   components: {
-    ParametersDialog,
     NewTunnelDialog,
     DeleteDeviceDialog,
     RemoteConnectionStatusIcon,
