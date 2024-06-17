@@ -18,7 +18,7 @@
           <v-dialog v-model="showUpdateDialog" v-if="showUpdateDialog">
             <EnvFormDialog :envs="updatableEnvs" :initialValues="initialUpdatableValues" @isValidForm="setUpdateEnabled"
               @formValues="setUpdateFormValues" :serviceName="service?.name">
-              <v-btn color="secondary" plain class="mr-4" @click="showDialog = false">Cancel</v-btn>
+              <v-btn color="secondary" plain class="mr-4" @click="showUpdateDialog = false">Cancel</v-btn>
               <v-btn color="primary" class="mr-4" :disabled="disableUpdate" @click="updateService()">Update</v-btn>
             </EnvFormDialog>
           </v-dialog>
@@ -90,7 +90,7 @@
           <v-dialog v-model="showUpdateDialog" v-if="showUpdateDialog">
             <EnvFormDialog :envs="updatableEnvs" :initialValues="initialUpdatableValues" @isValidForm="setUpdateEnabled"
               @formValues="setUpdateFormValues" :serviceName="service?.name">
-              <v-btn color="secondary" plain class="mr-4" @click="showDialog = false">Cancel</v-btn>
+              <v-btn color="secondary" plain class="mr-4" @click="showUpdateDialog = false">Cancel</v-btn>
               <v-btn color="primary" class="mr-4" :disabled="disableUpdate" @click="updateService()">Update</v-btn>
             </EnvFormDialog>
           </v-dialog>
@@ -239,7 +239,7 @@ export default {
           version: this.updatableService.version,
           envs: this.updateFormValues,
         })
-        this.showDialog = false;
+        this.showUpdateDialog = false;
       })
     },
     setSaveEnabled(validForm) {
