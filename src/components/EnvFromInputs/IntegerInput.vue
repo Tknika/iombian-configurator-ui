@@ -19,7 +19,6 @@ export default {
     integer: Boolean,
   },
   created() {
-    console.log(this.default)
     this.value = Number(this.default)
   },
   methods: {

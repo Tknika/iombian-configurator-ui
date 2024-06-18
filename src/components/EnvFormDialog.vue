@@ -14,7 +14,8 @@
               :description="env.description" :type="env.type" :default="initialValues[envName]" integer />
             <IntegerInput v-else-if="env.type.split(':')[0] == 'float'" v-model="formValues[envName]" :name="env.name"
               :description="env.description" :type="env.type" :default="initialValues[envName]" />
-            <TextInput v-else-if="env.type.split(':')[0] == 'string' && env.type.split(':')[1][0] == '0'"
+            <TextInput
+              v-else-if="env.type == 'string' || (env.type.split(':')[0] == 'string' && (env.type.split(':')[1][0] == '0'))"
               v-model="formValues[envName]" :name="env.name" :description="env.description" :type="env.type"
               :default="initialValues[envName]" />
             <PasswordInput v-else-if="env.type.split(':')[0] == 'string' && env.type.split(':')[1][0] == '1'"
@@ -63,7 +64,6 @@ export default {
     serviceName: String,
   },
   created() {
-    console.log(this.initialValues)
     this.formValues = { ...this.initialValues };
   },
   watch: {
