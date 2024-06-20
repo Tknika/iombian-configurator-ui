@@ -92,6 +92,7 @@ export default {
     snackbarColor: "success",
   }),
   created() {
+    this.$store.dispatch("user/bindDevicesRef");
     this.$store.dispatch("marketplaceServices/bindMarketplaceServicesRef");
     this.deviceId = this.$route.params.id;
     this.$store.dispatch("deviceServices/setDeviceId", this.deviceId)
@@ -104,8 +105,7 @@ export default {
     parameters() {
       const params = this.$store.state.deviceServices.fields?.parameters;
       if (!params) return {};
-      const firstDate = Object.keys(params)[0]
-      return params[firstDate];
+      return params;
     },
     /** Installed services of the device */
     installedServices() {
@@ -144,27 +144,6 @@ export default {
       };
       Object.assign(this.parameters, config_date);
     },
-    // open(deviceId, parameters, pushEnabled = false) {
-    //   this.show = true;
-    //   this.deviceId = deviceId;
-    //   this.pushEnabled = pushEnabled;
-    //   this.parameters = parameters
-    //     ? JSON.parse(JSON.stringify(parameters))
-    //     : JSON.parse(JSON.stringify(default_parameters));
-    //   const remote_configurator = {
-    //     remote_configurator: {
-    //       device_id: this.deviceId,
-    //       api_key: apiKey,
-    //       project_id: projectId,
-    //       refresh_token: this.$store.state.user.refreshToken,
-    //     },
-    //   };
-    //   if (this.$store.state.user.refreshToken != "") {
-    //     Object.assign(this.parameters, remote_configurator);
-    //   }
-    //   this.bluetoothAvailable = "bluetooth" in navigator;
-    //   this.serialAvailable = "serial" in navigator;
-    // },
     showSnackbar(text, color) {
       this.snackbarText = text;
       this.snackbarColor = color;
@@ -172,6 +151,7 @@ export default {
     },
     push() {
       this.setConfigDate();
+      console.log(this.parameters);
       this.$store.dispatch("user/addDeviceConfiguration", this.parameters);
       this.show = false;
     },
