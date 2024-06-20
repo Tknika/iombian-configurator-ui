@@ -5,7 +5,7 @@
 
 <script>
 export default {
-  name: "IntegerInput",
+  name: "NumberInput",
   data() {
     return {
       value: Number,
@@ -16,7 +16,7 @@ export default {
     description: String,
     type: String,
     default: String,
-    integer: Boolean,
+    float: Boolean,
   },
   created() {
     this.value = Number(this.default)
@@ -34,7 +34,7 @@ export default {
         ];
       }
 
-      if (this.integer) {
+      if (!this.float) {
         const integerRegex = new RegExp("^[0-9]+$")
         rules.push(integerRegex.test(this.value) || `Value must be an ingeter`);
       }
@@ -44,7 +44,7 @@ export default {
   },
   watch: {
     value() {
-      this.$emit("input", this.value);
+      this.$emit("input", String(this.value));
     }
   }
 }

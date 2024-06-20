@@ -10,9 +10,9 @@
       <v-container>
         <v-row v-for="(env, envName, index) in envs" :key="index">
           <v-col>
-            <IntegerInput v-if="env.type.split(':')[0] == 'integer'" v-model="formValues[envName]" :name="env.name"
+            <NumberInput v-if="env.type.split(':')[0] == 'integer'" v-model="formValues[envName]" :name="env.name"
               :description="env.description" :type="env.type" :default="initialValues[envName]" integer />
-            <IntegerInput v-else-if="env.type.split(':')[0] == 'float'" v-model="formValues[envName]" :name="env.name"
+            <NumberInput v-else-if="env.type.split(':')[0] == 'float'" v-model="formValues[envName]" :name="env.name"
               :description="env.description" :type="env.type" :default="initialValues[envName]" />
             <TextInput
               v-else-if="env.type == 'string' || (env.type.split(':')[0] == 'string' && (env.type.split(':')[1][0] == '0'))"
@@ -37,7 +37,7 @@
 </template>
 
 <script>
-import IntegerInput from "./EnvFromInputs/IntegerInput.vue";
+import NumberInput from "./EnvFromInputs/NumberInput.vue";
 import TextInput from "./EnvFromInputs/TextInput.vue";
 import PasswordInput from "./EnvFromInputs/PasswordInput.vue";
 import BooleanInput from "./EnvFromInputs/BooleanInput.vue";
@@ -45,7 +45,7 @@ import SelectInput from "./EnvFromInputs/SelectInput.vue";
 
 export default {
   components: {
-    IntegerInput,
+    NumberInput,
     TextInput,
     PasswordInput,
     BooleanInput,
