@@ -14,29 +14,35 @@
               :localConnectionStatus="localConnectionStatus"
             />
             <v-spacer></v-spacer>
-            <v-btn v-if="!$vuetify.breakpoint.xs" small text outlined :to="deviceId" class="mr-2">
-              Settings<v-icon right>mdi-cog</v-icon>
-            </v-btn>
-            <v-btn v-if="$vuetify.breakpoint.xs" small text outlined :to="deviceId" class="mr-2">
-              <v-icon>mdi-cog</v-icon>
-            </v-btn>
 
-            <v-btn
-              v-if="!$vuetify.breakpoint.xs"
-              small
-              outlined
-              text
-              @click="showDeleteDeviceDialog = true"
+            <div class="d-flex" style="gap: 1rem">
+              <v-badge :value="updateAvailable" icon="mdi-update" overlap>
+                <v-btn v-if="!$vuetify.breakpoint.xs" small text outlined :to="deviceId">
+                  Settings<v-icon right>mdi-cog</v-icon>
+                </v-btn>
+                <v-btn v-if="$vuetify.breakpoint.xs" small text outlined :to="deviceId">
+                  <v-icon>mdi-cog</v-icon>
+                </v-btn>
+              </v-badge>
+
+              <v-btn
+                v-if="!$vuetify.breakpoint.xs"
+                small
+                outlined
+                text
+                @click="showDeleteDeviceDialog = true"
               >Delete<v-icon dark right>mdi-delete</v-icon></v-btn
-            >
-            <v-btn
-              v-if="$vuetify.breakpoint.xs"
-              small
-              outlined
-              text
-              @click="showDeleteDeviceDialog = true"
+              >
+              <v-btn
+                v-if="$vuetify.breakpoint.xs"
+                small
+                outlined
+                text
+                @click="showDeleteDeviceDialog = true"
               ><v-icon dark>mdi-delete</v-icon></v-btn
-            >
+              >
+            </div>
+
             <DeleteDeviceDialog
               :show="showDeleteDeviceDialog"
               :deviceId="deviceId"
@@ -198,6 +204,10 @@ export default {
       } else {
         return [];
       }
+    },
+    updateAvailable() {
+      let updatableServices = this.data.updatable_services
+      return updatableServices != undefined && Object.keys(updatableServices).length > 0
     },
   },
   methods: {
