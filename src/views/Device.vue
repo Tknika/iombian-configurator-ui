@@ -43,12 +43,14 @@
           <v-col cols="12">
             <NetworkCard v-if="'networking' in parameters" :networkParams="parameters.networking" />
           </v-col>
-          <v-col cols="12">
-            <InstalledServicesCard :services="installedServices" />
-          </v-col>
-          <v-col cols="12">
-            <MoreServicesCard :services="notInstalledServices" />
-          </v-col>
+          <div v-if="lastConnection">
+            <v-col cols="12">
+              <InstalledServicesCard :services="installedServices" />
+            </v-col>
+            <v-col cols="12">
+              <MoreServicesCard :services="notInstalledServices" />
+            </v-col>
+          </div>
         </v-row>
       </v-form>
     </v-container>
@@ -130,6 +132,9 @@ export default {
     },
     serialAvailable() {
       return "serial" in navigator;
+    },
+    lastConnection() {
+      return this.$store.state.deviceServices.fields.last_connection;
     }
   },
   methods: {
