@@ -1,3 +1,10 @@
+Vue view with the information of a device.
+
+This has the system, user and networking information and also the installed and the rest of the services.
+It also has a floating bar with the button to save the configuration with the device.
+The configuration can be synced with a serial connection, bluetooth connection or, if the service has been synced before, by pushing the information to firestore.
+To sync it manually, the configuration can be also downloaded.
+
 <template>
   <div>
     <v-overlay :value="bluetoothSynchingState">
@@ -39,8 +46,7 @@
           </v-col>
           <v-col cols="12">
             <UserCard v-if="'user' in parameters" :userParams="parameters.user" />
-          </v-col>
-          <v-col cols="12">
+          </v-col> <v-col cols="12">
             <NetworkCard v-if="'networking' in parameters" :networkParams="parameters.networking" />
           </v-col>
           <div style="width: 100%" v-if="lastConnection">
@@ -60,7 +66,6 @@
 </template>
 
 <script>
-import { apiKey, projectId } from "../main";
 import default_parameters from "../assets/default_parameters";
 import SystemCard from "../components/SystemCard.vue";
 import UserCard from "../components/UserCard.vue";
@@ -84,10 +89,8 @@ export default {
   },
   data: () => ({
     deviceId: null,
-    // bluetoothAvailable: false,
     bluetoothSynchingState: false,
     bluetoothSynchingValue: 0,
-    // serialAvailable: false,
     snackbarState: false,
     snackbarText: "",
     snackbarColor: "success",
@@ -103,14 +106,14 @@ export default {
     this.parameters = this.getParameters();
   },
   computed: {
-    /** Installed services of the device */
+    /** Installed services of the device. */
     installedServices() {
       return this.$store.state.deviceServices.services.map(({ id, version }) => (
         this.$store.state.marketplaceServices.services.find(
           (service) => (service.labels.version == version && service.labels.id == id))
       )).map(({ labels }) => labels)
     },
-    /** The rest of the services that are not installed */
+    /** The rest of the services that are not installed. */
     notInstalledServices() {
       let allServices = this.$store.state.marketplaceServices.services
       const installedIds = this.installedServices.map(({ id }) => id);
@@ -126,28 +129,40 @@ export default {
       );
       return latestVersions;
     },
+    /** Whether if the browser supports bluetooth. */
     bluetoothAvailable() {
       return "bluetooth" in navigator;
     },
+    /** Whether if the browser supports serial. */
     serialAvailable() {
       return "serial" in navigator;
     },
+    /** The date since the last connection of the device in epoch time format. */
     lastConnection() {
       return this.$store.state.deviceServices.fields.last_connection;
     },
+    /**
+     * Whether if push is enabled.
+     * Push is enabled if the last connection is not zero.
+     */
     pushEnabled() {
       return this.lastConnection != 0;
     },
   },
   methods: {
+    /**
+     * Get the initial parameters of the device.
+     * If the device has no parameters, the default parameters will be used.
+     */
     getParameters() {
       const params = this.$store.state.deviceServices.fields?.parameters
-      if (Object.keys(params).length){
+      if (Object.keys(params).length) {
         return params;
       } else {
         return default_parameters;
       }
     },
+    /** Set the date of this configuration. */
     setConfigDate() {
       const config_date = {
         config_date: strftime("%Y-%m-%dT%H:%M:%S"),

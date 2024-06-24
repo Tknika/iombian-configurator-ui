@@ -1,3 +1,17 @@
+Component for displaying an installed services information.
+
+Requires a service object with the properties of the labels of the firestore services:
+- id
+- name
+- version
+- author
+- description
+- documentation_url
+- changelog
+- ${service-name}
+- envs
+- ...
+
 <template>
   <v-card v-if="$vuetify.breakpoint.xs">
     <div class="d-flex flex-column">
@@ -169,17 +183,30 @@ export default {
     }
   },
   computed: {
+    /**
+     * If the service is updatable, the service to be updated to.
+     * This will be the same service but with another version.
+     *
+     * This is done because a service can have different labels in different versions.
+     */
     updatableService() {
       return this.getUpdatableService()
     },
+    /** The initial values of the service envs form. */
     initialValues() {
       return this.getInstalledEnvValues()
     },
+    /** The initial values of the updatable service envs form. */
     initialUpdatableValues() {
       return this.getUpdatableDefaultEnvs();
     },
   },
   methods: {
+    /**
+     * Given the service object, get the envs as {[env_name]: env_data}.
+     *
+     * The env data has the name, description, default value, and type properties.
+     */
     getEnvs(service) {
       let envs = {}
       Object.values(service).forEach(
@@ -191,6 +218,7 @@ export default {
       );
       return envs
     },
+    /** Get the current values of the envs of the installed service. */
     getInstalledEnvValues() {
       let installedEnvValues = {};
       Object.keys(this.envs).forEach((envName) => {
@@ -199,21 +227,28 @@ export default {
       })
       return installedEnvValues;
     },
+    /** Set the values of the envs from the result of the form values. */
     setEnvs() {
-      const formValuseStr = {};
+      const formValuesStr = {};
       Object.keys(this.formValues).forEach((key) => {
-        formValuseStr[key] = this.formValues[key].toString();
+        formValuesStr[key] = this.formValues[key].toString();
       })
       this.$store.dispatch("deviceServices/saveEnvs", {
         id: this.service.id,
         version: this.service.version,
-        envs: formValuseStr,
+        envs: formValuesStr,
       });
       this.showDialog = false;
     },
+    /** Uninstall this service. */
     uninstallService() {
       this.$store.dispatch("deviceServices/uninstallService", this.service.id)
     },
+    /** Get the updatable service.
+     *
+     * The updatable service is the same service but with another version.
+     * This is done because a service can have different labels in different versions.
+     */
     getUpdatableService() {
       if (!(this.service.id in this.$store.state.deviceServices.fields.updatable_services)) {
         return null
@@ -225,6 +260,7 @@ export default {
       ).labels;
       return service
     },
+    /** Get the default values of the updatable service envs in {[env_name]: env_value} format. */
     getUpdatableDefaultEnvs() {
       let envs = {};
       Object.keys(this.updatableEnvs).forEach((envName) => {
@@ -232,6 +268,7 @@ export default {
       })
       return envs;
     },
+    /** Update this service to the updatable service. */
     updateService() {
       this.$store.dispatch("deviceServices/uninstallService", this.service.id).then(() => {
         this.$store.dispatch("deviceServices/installService", {
@@ -242,15 +279,19 @@ export default {
         this.showUpdateDialog = false;
       })
     },
+    /** Set the save button from the service envs form as enabled/disabled. */
     setSaveEnabled(validForm) {
       this.disableSave = !validForm
     },
+    /** Set the update button from the updatable service envs form as enabled/disabled. */
     setUpdateEnabled(validForm) {
       this.disableUpdate = !validForm
     },
+    /** When the values of the service envs form change, this callback is called and updates the form values. */
     setFormValues(formValues) {
       this.formValues = formValues;
     },
+    /** When the values of the updatable service envs form change, this callback is called and updates the updatable form values. */
     setUpdateFormValues(formValues) {
       this.updateFormValues = formValues;
     },

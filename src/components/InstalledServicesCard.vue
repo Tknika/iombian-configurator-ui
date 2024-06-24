@@ -1,3 +1,18 @@
+Component for displaying all the services that are installed in the device.
+
+Requires a list of the services to display.
+Services are objects with the properties of the labels of the firestore services:
+- id
+- name
+- version
+- author
+- description
+- documentation_url
+- changelog
+- ${service-name}
+  - envs
+    - ...
+
 <template>
   <v-card>
     <v-card-title>

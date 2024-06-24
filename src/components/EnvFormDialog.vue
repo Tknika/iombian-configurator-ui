@@ -1,3 +1,12 @@
+Form for setting the environment variables of a service.
+
+Takes the service name, the environment variables and the initial values of the form.
+
+The environment variables object is a {[env_name]: env_data} object.
+The env_data has the name, description, default value, and type properties.
+
+The initial values of the form are in a {[env_name]: env_value} format.
+
 <template>
   <v-card>
     <v-card-title>
@@ -67,9 +76,11 @@ export default {
     this.formValues = { ...this.initialValues };
   },
   watch: {
+    /** When the form changes send a notification to the parent components `isValidForm` function with a boolean value representing if the form is valid or not. */
     isValidForm() {
       this.$emit("isValidForm", this.isValidForm);
     },
+    /** When the value of a form input changes, send a notification to the parent components `formValues` function with the values of the form inputs. */
     formValues() {
       this.$emit("formValues", this.formValues);
     }

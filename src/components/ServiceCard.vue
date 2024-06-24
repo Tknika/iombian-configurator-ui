@@ -1,3 +1,17 @@
+Component for displaying a not installed services information.
+
+Requires a service object with the properties of the labels of the firestore services:
+- id
+- name
+- version
+- author
+- description
+- documentation_url
+- changelog
+- ${service-name}
+  - envs
+    - ...
+
 <template>
   <v-card>
     <div class="d-flex flex-column">
@@ -49,54 +63,6 @@
         {{ service?.description ?? "Loading description..." }}
       </v-card-text>
     </div>
-
-    <!-- <v-row> -->
-    <!--   <v-col cols="6"> -->
-    <!--     <v-card-title> -->
-    <!--       <v-row class="ml-4"> -->
-    <!--         <span class="subtitle-1 font-weight-medium"> -->
-    <!--           {{ service?.name ?? "Loading name..." }} -->
-    <!--         </span> -->
-    <!--         <v-tooltip right> -->
-    <!--           <template v-slot:activator="{ on }"> -->
-    <!--             <div class="subtitle-1 font-weight-regular ml-2 grey--text text--darken-2" v-on="on"> -->
-    <!--               {{ service?.version ?? "" }} -->
-    <!--             </div> -->
-    <!--           </template> -->
-    <!--           <span> -->
-    <!--             {{ service?.changelog ?? "Loading changelog..." }} -->
-    <!--           </span> -->
-    <!--         </v-tooltip> -->
-    <!--       </v-row> -->
-    <!--     </v-card-title> -->
-    <!--     <v-card-subtitle> -->
-    <!--       <v-row class="ml-4 mt-3"> -->
-    <!--         <span class="grey--text text--darken-2"> -->
-    <!--           {{ service?.author ?? "" }} -->
-    <!--         </span> -->
-    <!--       </v-row> -->
-    <!--       <v-row v-if="service?.documentation_url" class="ml-4 mt-3"> -->
-    <!--         <a :href="service?.documentation_url"> -->
-    <!--           Documentation -->
-    <!--         </a> -->
-    <!--       </v-row> -->
-    <!--     </v-card-subtitle> -->
-    <!--     <v-card-text class="mt-3"> -->
-    <!--       {{ service?.description ?? "Loading description..." }} -->
-    <!--     </v-card-text> -->
-    <!--   </v-col> -->
-    <!--   <v-spacer /> -->
-    <!--   <v-card-actions> -->
-    <!--     <v-btn class="mr-8" @click="showDialog = true">Install<v-icon right>mdi-download</v-icon></v-btn> -->
-    <!--     <v-dialog v-model="showDialog" v-if="showDialog"> -->
-    <!--       <EnvFormDialog :envs="envs" :initialValues="initialValues" @isValidForm="setInstallEnabled" -->
-    <!--         @formValues="setFormValues" :serviceName="service?.name"> -->
-    <!--         <v-btn type="button" plain class="mr-4" @click="showDialog = false">Cancel</v-btn> -->
-    <!--         <v-btn type="button" :disabled="disableInstall" class="mr-4" @click="installService()">Install</v-btn> -->
-    <!--       </EnvFormDialog> -->
-    <!--     </v-dialog> -->
-    <!--   </v-card-actions> -->
-    <!-- </v-row> -->
   </v-card>
 </template>
 
@@ -123,11 +89,17 @@ export default {
     this.envs = this.getEnvs()
   },
   computed: {
+    /** The initial values of the service envs form. */
     initialValues() {
       return this.getDefaultEnvs();
     }
   },
   methods: {
+    /**
+     * Get the envs of this service as {[env_name]: env_data}.
+     *
+     * The env data has the name, description, default value, and type properties.
+     */
     getEnvs() {
       let envs = {}
       Object.values(this.service).forEach(
@@ -139,6 +111,7 @@ export default {
       );
       return envs
     },
+    /** Get the default values of the service envs in {[env_name]: env_value} format. */
     getDefaultEnvs() {
       let envs = {};
       Object.keys(this.envs).forEach((envName) => {
@@ -146,6 +119,7 @@ export default {
       })
       return envs;
     },
+    /** Install this service in the device. */
     installService() {
       this.$store.dispatch("deviceServices/installService", {
         id: this.service.id,
@@ -154,9 +128,11 @@ export default {
       })
       this.showDialog = false;
     },
+    /** Set the install button from the service envs form as enabled/disabled. */
     setInstallEnabled(validForm) {
       this.disableInstall = !validForm;
     },
+    /** When the values of the service envs form change, this callback is called and updates the form values. */
     setFormValues(formValues) {
       this.formValues = formValues;
     }
