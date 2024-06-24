@@ -84,7 +84,6 @@ export default {
   },
   data: () => ({
     deviceId: null,
-    pushEnabled: true,
     // bluetoothAvailable: false,
     bluetoothSynchingState: false,
     bluetoothSynchingValue: 0,
@@ -135,7 +134,10 @@ export default {
     },
     lastConnection() {
       return this.$store.state.deviceServices.fields.last_connection;
-    }
+    },
+    pushEnabled() {
+      return this.lastConnection != 0;
+    },
   },
   methods: {
     getParameters() {
