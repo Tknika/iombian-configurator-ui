@@ -43,7 +43,7 @@
           <v-col cols="12">
             <NetworkCard v-if="'networking' in parameters" :networkParams="parameters.networking" />
           </v-col>
-          <div v-if="lastConnection">
+          <div style="width: 100%" v-if="lastConnection">
             <v-col cols="12">
               <InstalledServicesCard :services="installedServices" />
             </v-col>
