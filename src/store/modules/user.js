@@ -55,13 +55,6 @@ const actions = {
         deviceObject["parameters"] = configuration;
         db.collection("users").doc(context.state.id).collection("devices").doc(deviceId).update(deviceObject);
     }),
-    // deleteDeviceConfiguration: firestoreAction((context, configuration) => {
-    //     const configDate = configuration.config_date;
-    //     const deviceId = configuration.remote_configurator.device_id;
-    //     var deviceObject = context.state.devices.find(e => e.id == deviceId);
-    //     delete deviceObject["parameters"][configDate];
-    //     db.collection("users").doc(context.state.id).collection("devices").doc(deviceId).update(deviceObject);
-    // }),
     deleteUserData: firestoreAction(async (context) => {
         const devices = await db.collection('users').doc(context.state.id).collection("devices").get();
         devices.forEach(device => {
