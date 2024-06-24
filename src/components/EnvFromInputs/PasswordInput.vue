@@ -33,5 +33,10 @@ export default {
       return [regexPattern.test(this.value) || `Value must follow the given regex: ${regexString}`]
     },
   },
+  watch: {
+    value() {
+      this.$emit("input", this.value);
+    }
+  }
 }
 </script>
