@@ -90,6 +90,7 @@ export default {
     snackbarState: false,
     snackbarText: "",
     snackbarColor: "success",
+    parameters: {},
   }),
   created() {
     this.$store.dispatch("user/bindDevicesRef");
@@ -98,15 +99,9 @@ export default {
     this.$store.dispatch("deviceServices/setDeviceId", this.deviceId)
     this.$store.dispatch("deviceServices/bindFieldsRef");
     this.$store.dispatch("deviceServices/bindServicesRef");
-    this.setConfigDate();
+    this.parameters = this.getParameters();
   },
   computed: {
-    /** Parameters of the device in firestore */
-    parameters() {
-      const params = this.$store.state.deviceServices.fields?.parameters;
-      if (!params) return {};
-      return params;
-    },
     /** Installed services of the device */
     installedServices() {
       return this.$store.state.deviceServices.services.map(({ id, version }) => (
@@ -138,6 +133,14 @@ export default {
     }
   },
   methods: {
+    getParameters() {
+      const params = this.$store.state.deviceServices.fields?.parameters
+      if (Object.keys(params).length){
+        return params;
+      } else {
+        return default_parameters;
+      }
+    },
     setConfigDate() {
       const config_date = {
         config_date: strftime("%Y-%m-%dT%H:%M:%S"),
