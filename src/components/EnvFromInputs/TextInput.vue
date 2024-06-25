@@ -1,3 +1,8 @@
+Text input for the environment variables form.
+
+Takes the name of the variable, the description, the type and the default value as props.
+The type is the type sting of the labels of the service (e.g. "string:0;").
+
 <template>
   <v-text-field :label="name" :hint="description" persistent-hint v-model="value" required :rules="rule()"
     type="text" />
@@ -21,6 +26,11 @@ export default {
     this.value = this.default
   },
   methods: {
+    /**
+     * Rule that check if the password is valid.
+     *
+     * The input must follow the constraints of the type.
+     */
     rule() {
       const splittedType = this.type.split(":")
       if (splittedType.length === 1) {
@@ -32,6 +42,7 @@ export default {
     },
   },
   watch: {
+    /** When the value changes, notify to the parent by sending the value. */
     value() {
       this.$emit("input", this.value);
     }
