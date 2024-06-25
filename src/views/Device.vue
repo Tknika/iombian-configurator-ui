@@ -66,6 +66,7 @@ To sync it manually, the configuration can be also downloaded.
 </template>
 
 <script>
+import { apiKey, projectId } from "../main";
 import default_parameters from "../assets/default_parameters";
 import SystemCard from "../components/SystemCard.vue";
 import UserCard from "../components/UserCard.vue";
@@ -153,14 +154,24 @@ export default {
     /**
      * Get the initial parameters of the device.
      * If the device has no parameters, the default parameters will be used.
+     * Also adds the firebase tokens to the parameters.
      */
     getParameters() {
-      const params = this.$store.state.deviceServices.fields?.parameters
-      if (Object.keys(params).length) {
-        return params;
-      } else {
-        return default_parameters;
+      let params = this.$store.state.deviceServices.fields?.parameters
+      if (!Object.keys(params).length) {
+        params = default_parameters;
       }
+
+      if (this.$store.state.user.refreshToken != "") {
+        params.remote_configurator = {
+          device_id: this.deviceId,
+          api_key: apiKey,
+          project_id: projectId,
+          refresh_token: this.$store.state.user.refreshToken,
+        }
+      }
+
+      return params;
     },
     /** Set the date of this configuration. */
     setConfigDate() {
@@ -195,6 +206,7 @@ export default {
       }
 
       this.setConfigDate();
+      console.log(this.parameters);
 
       var device = null;
       try {
