@@ -17,7 +17,7 @@ To sync it manually, the configuration can be also downloaded.
     <v-container style="position: relative">
       <div style="position: absolute; top: 0rem; right: 0rem;">
         <div style="position: fixed; z-index: 5; transform: translate(-100%, 0%);">
-          <v-toolbar color="grey lighten-4" floating rounded class="ma-6 right-0">
+          <v-toolbar color="grey lighten-4" floating rounded class="mt-6 me-6 right-0">
             <v-toolbar-items>
               <v-btn v-if="serialAvailable && !$vuetify.breakpoint.xs" text @click="serialSync">Sync<v-icon
                   right>mdi-usb-port</v-icon></v-btn>
