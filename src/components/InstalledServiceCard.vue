@@ -178,8 +178,15 @@ export default {
   },
   created() {
     this.envs = this.getEnvs(this.service);
+    if ("order" in Object.values(this.envs)[0]) {
+      this.envs = this.sortEnvs(this.envs);
+    }
+
     if (this.updatableService) {
       this.updatableEnvs = this.getEnvs(this.updatableService);
+      if ("order" in Object.values(this.updatableEnvs)[0]) {
+        this.updatableEnvs = this.sortEnvs(this.updatableEnvs);
+      }
     }
   },
   computed: {
@@ -217,6 +224,12 @@ export default {
         }
       );
       return envs
+    },
+    /** Given the envs, sort them by the "order" property. */
+    sortEnvs(envs) {
+      return Object.entries(envs)
+        .sort((a, b) => parseInt(a[1].order) - parseInt(b[1].order))
+        .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {})
     },
     /** Get the current values of the envs of the installed service. */
     getInstalledEnvValues() {

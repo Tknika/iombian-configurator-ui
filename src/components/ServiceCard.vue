@@ -87,6 +87,9 @@ export default {
   },
   created() {
     this.envs = this.getEnvs()
+    if ("order" in Object.values(this.envs)[0]) {
+      this.envs = this.sortEnvs(this.envs);
+    }
   },
   computed: {
     /** The initial values of the service envs form. */
@@ -110,6 +113,12 @@ export default {
         }
       );
       return envs
+    },
+    /** Given the envs, sort them by the "order" property. */
+    sortEnvs(envs) {
+      return Object.entries(envs)
+        .sort((a, b) => parseInt(a[1].order) - parseInt(b[1].order))
+        .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {})
     },
     /** Get the default values of the service envs in {[env_name]: env_value} format. */
     getDefaultEnvs() {
