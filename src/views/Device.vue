@@ -49,14 +49,12 @@ To sync it manually, the configuration can be also downloaded.
           </v-col> <v-col cols="12">
             <NetworkCard v-if="'networking' in parameters" :networkParams="parameters.networking" />
           </v-col>
-          <div style="width: 100%" v-if="lastConnection">
-            <v-col cols="12">
-              <InstalledServicesCard :services="installedServices" />
-            </v-col>
-            <v-col cols="12">
-              <MoreServicesCard :services="notInstalledServices" />
-            </v-col>
-          </div>
+          <v-col cols="12">
+            <InstalledServicesCard :services="installedServices" />
+          </v-col>
+          <v-col cols="12">
+            <MoreServicesCard :services="notInstalledServices" />
+          </v-col>
         </v-row>
       </v-form>
     </v-container>
@@ -187,7 +185,6 @@ export default {
     },
     push() {
       this.setConfigDate();
-      console.log(this.parameters);
       this.$store.dispatch("user/addDeviceConfiguration", this.parameters);
       this.show = false;
     },
@@ -206,7 +203,6 @@ export default {
       }
 
       this.setConfigDate();
-      console.log(this.parameters);
 
       var device = null;
       try {
