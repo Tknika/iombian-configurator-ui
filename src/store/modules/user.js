@@ -49,8 +49,6 @@ const actions = {
     }),
     addDeviceConfiguration: firestoreAction((context, configuration) => {
         const deviceId = configuration.remote_configurator.device_id;
-		console.log(deviceId)
-		console.log(context.state.devices);
         var deviceObject = context.state.devices.find(e => e.id == deviceId);
         deviceObject["parameters"] = configuration;
         db.collection("users").doc(context.state.id).collection("devices").doc(deviceId).update(deviceObject);
