@@ -49,7 +49,7 @@ const actions = {
 		);
 	}),
 	/** Install a service given the service id, version and envs. */
-	installService: firestoreAction((context, { id, version, envs }) => {
+	installService: firestoreAction((context, { id, version, status, envs }) => {
 		const userId = context.rootState.user.id;
 		db.collection("users")
 			.doc(userId)
@@ -57,7 +57,7 @@ const actions = {
 			.doc(context.state.id)
 			.collection("installed_services")
 			.doc(id)
-			.set({ version, envs });
+			.set({ version, status, envs });
 	}),
 	/** Uninstall a service given the service id. */
 	uninstallService: firestoreAction((context, id) => {
@@ -68,7 +68,7 @@ const actions = {
 			.doc(context.state.id)
 			.collection("installed_services")
 			.doc(id)
-			.delete();
+			.update({ status: "to-be-uninstalled" });
 	}),
 	/** Update a service envs given the service id, version and envs. */
 	saveEnvs: firestoreAction((context, { id, version, envs }) => {
