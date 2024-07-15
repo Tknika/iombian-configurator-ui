@@ -263,6 +263,9 @@ export default {
      * This is done because a service can have different labels in different versions.
      */
     getUpdatableService() {
+      if (this.$store.state.deviceServices.fields.updatable_services === undefined) {
+        return null
+      }
       if (!(this.service.id in this.$store.state.deviceServices.fields.updatable_services)) {
         return null
       }
