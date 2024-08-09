@@ -66,6 +66,7 @@ To sync it manually, the configuration can be also downloaded.
 <script>
 import { apiKey, projectId } from "../main";
 import default_parameters from "../assets/default_parameters";
+import default_service_info from "../assets/default_service_info";
 import SystemCard from "../components/SystemCard.vue";
 import UserCard from "../components/UserCard.vue";
 import NetworkCard from "../components/NetworkCard.vue";
@@ -107,10 +108,19 @@ export default {
   computed: {
     /** Installed services of the device. */
     installedServices() {
-      return this.$store.state.deviceServices.services.map(({ id, version }) => (
-        this.$store.state.marketplaceServices.services.find(
-          (service) => (service.labels.version == version && service.labels.id == id))
-      )).map(({ labels }) => labels)
+      return this.$store.state.deviceServices.services.map(({ id, version }) => {
+        let service = this.$store.state.marketplaceServices.services.find(
+          (service) => (service.labels.version == version && service.labels.id == id));
+
+        if (service === undefined) {
+          default_service_info.labels.id = id;
+          default_service_info.labels.name = id;
+          default_service_info.labels.version = version;
+          return default_service_info;
+        }
+
+        return service
+    }).map(({ labels }) => labels)
     },
     /** The rest of the services that are not installed. */
     notInstalledServices() {

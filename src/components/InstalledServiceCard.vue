@@ -66,7 +66,7 @@ Requires a service object with the properties of the labels of the firestore ser
       </v-card-text>
 
       <div class="d-flex justify-end gap-2 pe-4 py-4">
-        <v-btn color="secondary" plain @click="showDialog = true">
+        <v-btn v-if="isServiceEditable" color="secondary" plain @click="showDialog = true">
           Edit
           <v-icon right>mdi-pencil</v-icon>
         </v-btn>
@@ -110,7 +110,7 @@ Requires a service object with the properties of the labels of the firestore ser
           </v-dialog>
         </v-tooltip>
         <v-spacer />
-        <v-btn color="secondary" plain @click="showDialog = true">
+        <v-btn v-if="isServiceEditable" color="secondary" plain @click="showDialog = true">
           Edit
           <v-icon right>mdi-pencil</v-icon>
         </v-btn>
@@ -178,7 +178,8 @@ export default {
   },
   created() {
     this.envs = this.getEnvs(this.service);
-    if ("order" in Object.values(this.envs)[0]) {
+    const envs_values = Object.values(this.envs);
+    if (envs_values.length && "order" in envs_values[0]) {
       this.envs = this.sortEnvs(this.envs);
     }
 
@@ -207,6 +208,11 @@ export default {
     initialUpdatableValues() {
       return this.getUpdatableDefaultEnvs();
     },
+    /** Check if the service is editable. */
+    isServiceEditable() {
+      // A service is editable if it has any env var.
+      return Object.values(this.envs).length > 0;
+    }
   },
   methods: {
     /**
