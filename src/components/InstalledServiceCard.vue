@@ -13,11 +13,12 @@ Requires a service object with the properties of the labels of the firestore ser
 - ...
 
 <template>
-  <v-card v-if="$vuetify.breakpoint.xs">
+  <v-card v-if="$vuetify.breakpoint.xs" :loading="isInstallationInProgress">
     <div class="d-flex flex-column">
       <div class="d-flex align-center">
         <v-card-title class="subtitle-1 font-weight-medium">
           {{ service?.name ?? "Loading name..." }}
+          <InstalledServiceStatusIcon :serviceStatus="serviceStatus"></InstalledServiceStatusIcon>
         </v-card-title>
         <v-spacer />
         <v-tooltip top>
@@ -86,11 +87,12 @@ Requires a service object with the properties of the labels of the firestore ser
     </div>
   </v-card>
 
-  <v-card v-else>
+  <v-card v-else :loading="isInstallationInProgress">
     <div class="d-flex flex-column">
       <div class="d-flex align-center">
         <v-card-title class="subtitle-1 font-weight-medium">
           {{ service?.name ?? "Loading name..." }}
+          <InstalledServiceStatusIcon :serviceStatus="serviceStatus"></InstalledServiceStatusIcon>
         </v-card-title>
         <v-tooltip top>
           <template v-slot:activator="{ on }">
@@ -153,11 +155,14 @@ Requires a service object with the properties of the labels of the firestore ser
 
 <script>
 import EnvFormDialog from "./EnvFormDialog.vue"
+import InstalledServiceStatusIcon from './InstalledServiceStatusIcon.vue'
+import service_status_info_mapping from "../assets/service_status_info_mapping";
 
 export default {
   name: "InstalledServiceCard",
   components: {
-    EnvFormDialog
+    EnvFormDialog,
+    InstalledServiceStatusIcon
   },
   data() {
     return {
@@ -171,6 +176,7 @@ export default {
       updateFormValues: {},
       validUpdateForm: false,
       disableUpdate: false,
+      serviceStatusMap: service_status_info_mapping
     }
   },
   props: {
@@ -212,6 +218,21 @@ export default {
     isServiceEditable() {
       // A service is editable if it has any env var.
       return Object.values(this.envs).length > 0;
+    },
+    /** The status of the service. */
+    serviceStatus() {
+      return this.$store.state.deviceServices.services.find(
+        (service) => service.id == this.service.id)?.status ?? "unknown";
+    },
+    /** 
+     * Check if the installation of the service is in progress.
+     * If it is, returns the color assigned to the status.
+     * If it is not, returns false.
+     */
+    isInstallationInProgress() {
+      return ["started", "unknown"].includes(this.serviceStatus) ? 
+              false : 
+              this.serviceStatusMap[this.serviceStatus]?.color ?? false;
     }
   },
   methods: {
