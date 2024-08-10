@@ -276,6 +276,7 @@ export default {
       this.$store.dispatch("deviceServices/saveEnvs", {
         id: this.service.id,
         version: this.service.version,
+        status: "to-be-updated",
         envs: formValuesStr,
       });
       this.showDialog = false;
