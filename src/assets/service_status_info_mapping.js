@@ -29,6 +29,11 @@ const service_status_info_mapping = {
         color: "grey",
         message: "The service installation processes has started, wait...",
     },
+    "to-be-updated": {
+        icon: "mdi-cloud-refresh",
+        color: "lime",
+        message: "The service is being updated, wait...",
+    },
     "to-be-uninstalled": {
         icon: "mdi-cloud-remove",
         color: "brown",
