@@ -110,16 +110,17 @@ export default {
     installedServices() {
       return this.$store.state.deviceServices.services.map(({ id, version }) => {
         let service = this.$store.state.marketplaceServices.services.find(
-          (service) => (service.labels.version == version && service.labels.id == id));
+          (service) => (service.labels?.version == version && service.labels?.id == id));
 
-        if (service === undefined) {
-          default_service_info.labels.id = id;
-          default_service_info.labels.name = id;
-          default_service_info.labels.version = version;
-          return default_service_info;
-        }
+          if (service === undefined) {
+            let service_info = JSON.parse(JSON.stringify(default_service_info));
+            service_info.labels.id = id;
+            service_info.labels.name = id;
+            service_info.labels.version = version;
+            return service_info;
+          }
 
-        return service
+          return service
     }).map(({ labels }) => labels)
     },
     /** The rest of the services that are not installed. */
