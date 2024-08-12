@@ -133,6 +133,7 @@ export default {
       this.$store.dispatch("deviceServices/installService", {
         id: this.service.id,
         version: this.service.version,
+        status: "to-be-installed",
         envs: this.formValues,
       })
       this.showDialog = false;
