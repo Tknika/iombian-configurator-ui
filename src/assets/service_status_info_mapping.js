@@ -1,22 +1,22 @@
 const service_status_info_mapping = {
     started: {
         icon: "mdi-check-bold",
-        color: "green",
+        color: "light-green",
         message: "The service is ready",
     },
     starting: {
         icon: "mdi-rocket-launch",
-        color: "orange",
+        color: "lime",
         message: "The service is being launched, wait...",
     },
     pulling: {
         icon: "mdi-cloud-arrow-down",
-        color: "amber",
+        color: "blue",
         message: "The service is being downloaded, wait...",
     },
     downloading: {
         icon: "mdi-file-document-refresh",
-        color: "blue",
+        color: "indigo",
         message: "The service info is being downloaded, wait..",
     },
     downloaded: {
@@ -24,15 +24,30 @@ const service_status_info_mapping = {
         color: "indigo",
         message: "The service info is downloaded",
     },
+    reconfigured: {
+        icon: "mdi-file-document-check",
+        color: "teel",
+        message: "The service reconfiguration info is downloaded",
+    },
+    updated: {
+        icon: "mdi-file-document-check",
+        color: "amber",
+        message: "The service update info is downloaded",
+    },
     "to-be-installed": {
         icon: "mdi-cloud-plus",
-        color: "grey",
+        color: "indigo",
         message: "The service installation processes has started, wait...",
     },
-    "to-be-updated": {
+    "to-be-reconfigured": {
         icon: "mdi-cloud-refresh",
-        color: "lime",
-        message: "The service is being updated, wait...",
+        color: "teal",
+        message: "The service reconfiguration process has started, wait...",
+    },
+    "to-be-updated": {
+        icon: "mdi-cloud-arrow-up",
+        color: "amber",
+        message: "The service update process has started, wait...",
     },
     "to-be-uninstalled": {
         icon: "mdi-cloud-remove",
@@ -41,7 +56,7 @@ const service_status_info_mapping = {
     },
     "to-be-removed": {
         icon: "mdi-delete",
-        color: "red",
+        color: "brown",
         message: "The service is being removed, wait...",
     },
     unknown: {
