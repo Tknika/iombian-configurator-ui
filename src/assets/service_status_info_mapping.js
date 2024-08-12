@@ -26,7 +26,7 @@ const service_status_info_mapping = {
     },
     reconfigured: {
         icon: "mdi-file-document-check",
-        color: "teel",
+        color: "teal",
         message: "The service reconfiguration info is downloaded",
     },
     updated: {
