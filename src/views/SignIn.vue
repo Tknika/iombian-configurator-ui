@@ -27,6 +27,11 @@
           style="min-height: 96px"
           :rules="[v => !!v || 'Password is required']"
         ></v-text-field>
+        <div class="text-right">
+          <v-btn text small color="primary" @click="forgotPassword">
+            Forgot Password?
+          </v-btn>
+        </div>
       </v-form>
       <v-alert v-if="errorMsg" border="top" color="red" class="ml-5 mr-5">{{
         errorMsg
@@ -93,6 +98,9 @@ export default {
     },
     signUp() {
       this.$router.replace({ name: "SignUp" });
+    },
+    forgotPassword() {
+      this.$router.replace({ name: "ForgotPassword" });
     },
     async signInWithGoogle() {
       this.isLoading = true;
